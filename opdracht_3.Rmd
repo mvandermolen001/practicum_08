@@ -1,0 +1,124 @@
+---
+title: "titel "
+author: "Margriet van der Molen"
+date: "`r Sys.Date()`"
+
+header-includes:
+   - \usepackage{longtable}
+   - \usepackage{hyperref}
+output:
+    pdf_document:
+      number_sections: yes
+linkcolor: blue
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introductie
+Glucocorticoiden zijn steroide-hormonen die betrokken zijn bij een groot aantal mechanismen in het lichaam.
+Een van de mechanismen waarin deze stoffen betrokken zijn is de onstekingsreactie, maar ook spelen ze een rol bij
+het metabolisme. 
+
+Bij het toedienen van glucocorticoiden bindt het aan de glucocorticoid receptor (GR). Het geactiveerde complex
+zorgt ervoor dat genen die betrokken zijn bij de onstekingsreactie minder tot expressie worden gebracht. Hierdoor
+verminderd de onstekingsreactie. Glucocorticoiden remmen ook de transcriptie van het GR. Het geactiveerde complex bindt
+namelijke aan het glucocorticoid response element.
+
+Hieronder wordt het effect van de toediening van methylprednisolon (MPL) bij ratten. MPL is een corticosteroid, er
+wordt gekeken naar de effecten van deze medicatie op de expressie van GR met behulp van een model. Dit model wordt
+vervolgens vergeleken met de data van de experimenten.
+
+De resultaten die gebruikt gaan worden komen van een studie waar verschillende ratten MPL toegediend kregen voor 7
+dagen. De medicatie werd toegediend in een dose van 0.1 mg/per kg/per uur en een dose van 0.3/mg per kg/ per uur in
+de vorm van een infusie. De concentratie van de medicatie is gemeten in ng/mL, van het receptor mRNA in fmol/g, en
+van de vrije receptor fmol/mg.
+
+
+## Doel
+Het doel van dit onderzoek is het vergelijken met het eerder gemaakte model met de data van de experimenten. Door
+deze vergelijkingen kan er vervolgens gezegd worden of het model valide is of niet. Om dit doel te halen zullen
+de resultaten van het model in het zelfde plot gezet worden als de resultaten van het experiment. De hypothese
+is dat het model valide is.
+
+## Theorie
+
+- Describe biological model
+- Picture of the biological model
+
+```{r, echo=FALSE, out.width='95%'}
+#knitr::include_graphics('example.png')
+```
+Give an explanation of the model with citations of source \cite{Soertaert10} (replace this with actual source)
+and formula explanation
+
+$$\frac{\delta R}{\delta t} = -r * R + m $$
+Describe each element and the transformations
+
+# Methode
+
+## Het software model
+
+- Describe the software tools used, as well as the libraries
+- Describe the software implementation (note: code below is an example)
+```{r}
+library(deSolve)
+# code
+```
+
+## Model configuratie
+
+Explain chosen initial state, parameter values and time sequence. Use tables with values as for example below
+\begin{longtable}[l]{l|l|l}
+\caption{Parameter Values} \\ \hline
+\label{param_table}
+$\textbf{Parameter}$             &$\textbf{Value}$& $\textbf{Unit}$              \\ \hline
+\endhead
+$a$       & 0.08  & $hour^{-1}$         \\ \hline
+$b$       & 0.06  & $hour^{-1}$         \\ \hline
+$c$       & 0.06  & $hour^{-1}$         \\ \hline
+\end{longtable}
+
+
+# Resultaten
+Introduction of results, how does it answer your research questions.
+
+```{r}
+data <- read.csv("MPL.csv", na.strings = "NA")
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_01
+
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm = T)
+median_MPL_03
+```
+
+
+```{r}
+#plot(out)
+#code to generate figures with title, subscripts, legenda etc
+```
+
+- Describe what can be seen in such way that it leads to an answer to your research questions
+- Give your figures a number and a descriptive title.
+- Provide correct axis labels (unit and quantity), legend and caption.
+- Always refer to and discuss your figures and tables in the text - they never stand alone.
+
+
+# Discussie and Conclusie
+## Discussie
+- Compare your results with what is expecting from the literature and discuss differences with them.
+- Discuss striking and surprising results.
+- Discuss weaknesses in your research and how they could be addressed.
+
+## Conclusie 
+Discuss what your goal was, what the end result is and how you could continue working from here.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Soertaert10}
+Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
+
+\end{thebibliography}
