@@ -15,10 +15,10 @@ linkcolor: blue
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(pander)
 ```
 
 # Introductie
-
 Glucocorticoiden zijn steroide-hormonen die betrokken zijn bij een groot aantal mechanismen in het lichaam.
 Een van de mechanismen waarin deze stoffen betrokken zijn is de onstekingsreactie, maar ook spelen ze een rol bij
 het metabolisme. 
@@ -39,48 +39,92 @@ van de vrije receptor fmol/mg.
 
 
 ## Doel
-Het doel van dit onderzoek is het vergelijken met het eerder gemaakte model met de data van de experimenten. Door
+Het doel van dit onderzoek is het vergelijken van het eerder gemaakte model met de data van de experimenten. Door
 deze vergelijkingen kan er vervolgens gezegd worden of het model valide is of niet. Om dit doel te halen zullen
 de resultaten van het model in het zelfde plot gezet worden als de resultaten van het experiment. De hypothese
 is dat het model valide is.
 
 ## Theorie
 
-- Describe biological model
-- Picture of the biological model
+Het biologisch model is nogal uitgebreid zoals hieronder te zien is in figuur 1. In dit model wordt beschreven dat het
+receptor mRNA (mRNAR) beinvloed wordt door de synthese van het mRNA(ks_Rm) en de degradatie van het mRNA(kd_Rm).
+R is de vrije glucocorticoide receptor dichtheid in het cytostol, hier beschrijft ks_R de synthese van de glucocorticoide receptor, 
+en kd_R beschrijft de afbraak ervan.
 
-```{r, echo=FALSE, out.width='95%'}
-#knitr::include_graphics('example.png')
+R wordt ook beinvloed door de aanmaak van het glucocorticoide receptor complex (DR) en de hoeveelheid van dit complex
+in de nucleus (DR(N)). Kon is de vorming van DR, kT zegt iets over het verplaatsen van DR naar de celkern. Een deel
+van DR(N) wordt weer terug gebracht naar het cytostol kre, maar een deel van kre komt niet meer terug. Rf is de fractie
+van de vrije receptor die opnieuw gebruikt wordt. IC5_Rm is de concentratie van DR(N) waarbij de aanmaak van het
+receptor mRNA daalt tot 50% van de basis waarde.
+
+D is de concentratie van MPL in molair.
+
+```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van glucocoritcoide receptor dynamica"}
+knitr::include_graphics('model.png')
 ```
-Give an explanation of the model with citations of source \cite{Soertaert10} (replace this with actual source)
-and formula explanation
 
-$$\frac{\delta R}{\delta t} = -r * R + m $$
-Describe each element and the transformations
+Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt.
+
+$$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm + DR(N)}}) -k_{d\_Rm} * mRNA_R$$
+De concentratie vrije receptor(R) is als volgt af te leiden:
+$$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
+
+De concentratie receptor complex(DR) is als volgt af te leiden:
+$$\frac{dDR}{dt} = k_{on} * D *R - k_t * DR$$
+
+De concentratie receptor complex(DR(N)) in de kern is als volgt af te leiden:
+$$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
+
+
 
 # Methode
 
 ## Het software model
 
-- Describe the software tools used, as well as the libraries
-- Describe the software implementation (note: code below is an example)
+Gebruikt in dit model is R (versie 4.0.4) met de deSolve library (versie 1.28), en pander (versie 0.6.4) voor de tabellen. Het volgende model is gebruikt.
+
 ```{r}
 library(deSolve)
-# code
+
+# Define model
+glucocorticoid <- function(t,state,parms){
+  with(as.list(c(parms)),{
+  dRmO <- ks_Rm * (1 - state[4] / (IC50_Rm + state[4])) - kd_Rm * state[1]
+  dRO <- ks_r * state[1] + Rf * kre * state[4] - kon * D * state[2] - kd_R * state[2]
+  dDR <- kon * D * state[2] - kT * state[4]
+  dDR_N <- kT * state[3] - kre * state[4]
+  return(list(c(dRmO, dRO, dDR, dDR_N)))})}
+
 ```
 
 ## Model configuratie
 
-Explain chosen initial state, parameter values and time sequence. Use tables with values as for example below
-\begin{longtable}[l]{l|l|l}
-\caption{Parameter Values} \\ \hline
-\label{param_table}
-$\textbf{Parameter}$             &$\textbf{Value}$& $\textbf{Unit}$              \\ \hline
-\endhead
-$a$       & 0.08  & $hour^{-1}$         \\ \hline
-$b$       & 0.06  & $hour^{-1}$         \\ \hline
-$c$       & 0.06  & $hour^{-1}$         \\ \hline
-\end{longtable}
+```{r}
+values <- read.csv("parameters.txt", header = T)
+pander(values)
+```
+
+```{r}
+ini_values <- read.csv("initiele.txt", header = T)
+pander(ini_values)
+```
+Deze parameters zijn gebaseerd op een aantal experimenten uitgevoerd op ratten die MPL kregen toegediend.De concentratie MPL (D) is in
+dit model constant over de 7 dagen. Het is in 20 ng/mL aanwezig, omdat D in nmol per liter is moet dit eerst omgerekend worden. Hier uit komt
+53.41 nmol/L MPL voor de D parameter.
+
+```{r}
+# Set parameters
+parameters <- c(ks_Rm =2.90, IC50_Rm =26.2, kon =0.00329, kT =0.63, 
+                kre=0.57, Rf=0.49, kd_R=0.0572, kd_Rm=0.612, ks_r=3.22, D = 53.41)
+
+# Time
+times <- seq(0, 168, by = 1)
+
+# Define initial values
+state <- c(RmO=4.74, RO =267, DR=0, DR_N=0)
+
+out <- ode(times = times, y = state, parms = parameters, func = glucocorticoid)
+```
 
 
 # Resultaten
@@ -89,11 +133,19 @@ Introduction of results, how does it answer your research questions.
 ```{r}
 data <- read.csv("MPL.csv", na.strings = "NA")
 median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
-median_MPL_01
+median_MPL_01 <- median_MPL_01*1000/374.471
 
 median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm = T)
-median_MPL_03
+median_MPL_03 <- median_MPL_03*1000/374.471
 ```
+
+
+```{r}
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],
+list(data$dose,data$time),median, na.rm=TRUE)
+names(medians)[1:2] <- c("dose","time")
+```
+
 
 
 ```{r}
