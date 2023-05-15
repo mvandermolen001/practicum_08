@@ -16,10 +16,8 @@ linkcolor: blue
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Test1111
 
 # Introductie
-test
 
 Glucocorticoiden zijn steroide-hormonen die betrokken zijn bij een groot aantal mechanismen in het lichaam.
 Een van de mechanismen waarin deze stoffen betrokken zijn is de onstekingsreactie, maar ook spelen ze een rol bij
