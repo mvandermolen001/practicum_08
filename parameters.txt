@@ -1,0 +1,11 @@
+Parameters, waardes
+ks_Rm (fmol/g liver/h),2.90
+IC50_Rm (fmol/mg protein),26.2
+kon (L/nmol/h),0.00329
+kT (1 / h),0.63
+kre (1 / h),0.57
+Rf,0.49
+kd_R (1 / h),0.0572
+kd_Rm,0.612
+ks_r,3.22
+D (nmol/L),0
