@@ -1,6 +1,6 @@
 ---
 title: "titel "
-author: "Margriet van der Molen"
+author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
 
 header-includes:
@@ -108,27 +108,6 @@ pander(values)
 ini_values <- read.csv("initiele.txt", header = T)
 pander(ini_values)
 ```
-Deze parameters zijn gebaseerd op een aantal experimenten uitgevoerd op ratten die MPL kregen toegediend.De concentratie MPL (D) is in
-dit model constant over de 7 dagen. Het is in 20 ng/mL aanwezig, omdat D in nmol per liter is moet dit eerst omgerekend worden. Hier uit komt
-53.41 nmol/L MPL voor de D parameter.
-
-```{r}
-# Set parameters
-parameters <- c(ks_Rm =2.90, IC50_Rm =26.2, kon =0.00329, kT =0.63, 
-                kre=0.57, Rf=0.49, kd_R=0.0572, kd_Rm=0.612, ks_r=3.22, D = 53.41)
-
-# Time
-times <- seq(0, 168, by = 1)
-
-# Define initial values
-state <- c(RmO=4.74, RO =267, DR=0, DR_N=0)
-
-out <- ode(times = times, y = state, parms = parameters, func = glucocorticoid)
-```
-
-
-# Resultaten
-Introduction of results, how does it answer your research questions.
 
 ```{r}
 data <- read.csv("MPL.csv", na.strings = "NA")
@@ -139,6 +118,32 @@ median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm = T)
 median_MPL_03 <- median_MPL_03*1000/374.471
 ```
 
+Deze parameters zijn gebaseerd op een aantal experimenten uitgevoerd op ratten die MPL kregen toegediend.De concentratie MPL (D) is in
+dit model constant over de 7 dagen. Voor de waarde D wordt de mediaan van  MPL concentratie uit de experimenten gebruikt.
+
+```{r}
+# Time
+times <- seq(0, 168, by = 1)
+
+# Define initial values
+state <- c(RmO=4.74, RO =267, DR=0, DR_N=0)
+
+#Set parameters of dose 0.1
+parameters <- c(ks_Rm =2.90, IC50_Rm =26.2, kon =0.00329, kT =0.63, 
+                kre=0.57, Rf=0.49, kd_R=0.0572, kd_Rm=0.612, ks_r=3.22, D = median_MPL_01)
+dose_1 <- ode(times = times, y = state, parms = parameters, func = glucocorticoid)
+
+#Set parameters of dose 0.3
+parameters <- c(ks_Rm =2.90, IC50_Rm =26.2, kon =0.00329, kT =0.63, 
+                kre=0.57, Rf=0.49, kd_R=0.0572, kd_Rm=0.612, ks_r=3.22, D = median_MPL_03)
+dose_3 <- ode(times = times, y = state, parms = parameters, func = glucocorticoid)
+```
+
+
+# Resultaten
+
+## Valideren van het model
+Om dat het model per uur maar 1 waarde heeft maar de data niet is eerst de mediaan uitgerekend per tijdseenheid.
 
 ```{r}
 medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],
@@ -146,17 +151,47 @@ list(data$dose,data$time),median, na.rm=TRUE)
 names(medians)[1:2] <- c("dose","time")
 ```
 
+Vervolgens is dit geplot.
 
+```{r, figure.cap = "Uitkomsten van het model vergeleken met de resultaten van het experiment. In beide gevallen laat het model eerst een sterke daling zien van het receptor mRNA, vervolgens klimt het omhoog om uiteindelijk te stabiliseren. De resultaten van de experimenten dalen ook sterk, maar stabiliseren niet. Bij de vrije receptor dichtheid is er ook een sterke daling, deze klimt niet meer omhoog maar trekt stabiel rond de 50 fmol/mg. De resultaten van de experimenten laten dezelfde daling zien maar stijgt na 50 uur weer een beetje om vervolgens langzaam verder te dalen, het ligt niet stabiel."}
+layout(matrix(c(1 ,2, 3, 4), ncol = 2, nrow = 2, byrow = TRUE))
 
-```{r}
-#plot(out)
-#code to generate figures with title, subscripts, legenda etc
+plot(dose_1[,"RmO"], type = "l", ylim = c(0.5, 5), main = "mRNA of receptor for a dose of 0.1",
+     xlab = "Time(hours)", ylab = "fmol / g")
+points(medians$mRNA[medians$dose == 0.1 | medians$dose == 0.0]~
+         medians$time[medians$dose == 0.1| medians$dose == 0.0]
+       ,pch = 20, type = "b", col = "red")
+
+plot(dose_3[,"RmO"], type = "l", ylim = c(0.5, 5), main = "mRNA of receptor for a dose of 0.3"
+     ,xlab = "Time(hours)", ylab = "fmol / g")
+points(medians$mRNA[medians$dose == 0.3 | medians$dose == 0.0]~
+         medians$time[medians$dose == 0.3| medians$dose == 0.0]
+       ,pch = 20, type = "b", col = "red")
+
+plot(dose_1[,"RO"], type = "l", main = "Free receptor density for a dose of 0.1",
+     xlab = "Time(hours)", ylab = "fmol / mg", ylim = c(50, 300))
+points(medians$Free_receptor[medians$dose == 0.1 | medians$dose == 0.0]~
+         medians$time[medians$dose == 0.1| medians$dose == 0.0]
+       ,pch = 20, type = "b", col = "red")
+
+plot(dose_3[,"RO"], type = "l", main = "Free receptor density for a dose of 0.3"
+     ,xlab = "Time(hours)", ylab = "fmol / mg", ylim = c(0, 300))
+points(medians$Free_receptor[medians$dose == 0.3 | medians$dose == 0.0]~
+         medians$time[medians$dose == 0.3| medians$dose == 0.0]
+       ,pch = 20, type = "b", col = "red")
 ```
 
-- Describe what can be seen in such way that it leads to an answer to your research questions
-- Give your figures a number and a descriptive title.
-- Provide correct axis labels (unit and quantity), legend and caption.
-- Always refer to and discuss your figures and tables in the text - they never stand alone.
+Terwijl het model bij het receptor mRNA stabiliseerd is er te zien dat bij de data van de experimenten dit niet zo is. De data van de experimenten
+heeft meer sterke stijgingen en dalingen in de verandering van de concentratie mRNA receptor. Voor de dose 0.1 de mRNA concentratie in de
+experiment data lijkt het tussen de 25 en 50 uur stabiel te zien maar na de 50 uur zijn er vaker sterke stijgingen en daling. Bij een dose van 0.3
+lijken de stijgingen en daling minder sterk, maar ligt de lijn ook nooit stabiel.
+
+De vergelijking tussen het model en de vrije receptor dichtheid bij een dose van 0.1 lijkt beter aangesloten bij elkaar. Het model laat in de
+eerste paar uur alleen maar een daling zien, terwijl in de data hier wel een kleine stijging tussen zit. Ook laat het model alleen maar een
+stabiele lijn zien na ongeveer 40 uur vergeleken met het model dit rond de 40 uur nog een stijging laat zien om vervolgens weer langzaam te dalen.
+Bij de vergelijkingen tussen het model en de data met een dose van 0.3 is eerst een daling in beide gevallen. Waar deze met elkaar verschillen is
+weer rond de 40 uur waar er ook bij een dose van 0.3 een stijging is, alhoewel deze stijging minder sterk lijkt te zien, vervolgens daalt de
+verandering in de vrije receptor dichtheid langzaam weer af.
 
 
 # Discussie and Conclusie
