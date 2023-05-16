@@ -196,9 +196,11 @@ verandering in de vrije receptor dichtheid langzaam weer af.
 
 # Discussie and Conclusie
 ## Discussie
-- Compare your results with what is expecting from the literature and discuss differences with them.
-- Discuss striking and surprising results.
-- Discuss weaknesses in your research and how they could be addressed.
+Om de resultaten te produceren is ervoor gekozen om de mediaan van de waardes te gebruiken. Hiervoor is gekozen om te voorkomen dat outliers teveel
+invloed hebben op de resultaten.
+
+Wat het verschil tussen het model en de data van de experimenten bij de concentratie mRNA receptor zou kunnen verklaren is het feit dat er te
+weining data is uit het experiment. Voor het verschil tussen beide bij de dichtheid in het vrije receptor comlex kan het aan dezelfde reden liggen.
 
 ## Conclusie 
 Discuss what your goal was, what the end result is and how you could continue working from here.
