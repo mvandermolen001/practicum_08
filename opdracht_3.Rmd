@@ -188,6 +188,9 @@ plot(dose_3[,"RO"], type = "l", main = "Free receptor density for a dose of 0.3"
 points(medians$Free_receptor[medians$dose == 0.3 | medians$dose == 0.0]~
          medians$time[medians$dose == 0.3| medians$dose == 0.0]
        ,pch = 20, type = "b", col = "red")
+
+legend("topright", legend=c("Model", "Mediaan van de data"),
+       col=c("black", "red"), lty=1:2, cex=0.8, pch = c(NA, 20))
 ```
 
 Terwijl het model bij het receptor mRNA stabiliseerd is er te zien dat bij de data van de experimenten dit niet zo is. De data van de experimenten
