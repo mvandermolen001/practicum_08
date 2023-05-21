@@ -1,4 +1,4 @@
-Inietiele waarde, waarde
+Initiele waarde, waarde
 Rm0 (fmol / g liver),4.74
 R0 (fmol/mg protein),267
 DR (fmol/mg protein),0
