@@ -203,7 +203,7 @@ verandering in de vrije receptor dichtheid langzaam weer af.
 
 1: What would be the time dependent concentration of the activated drug-receptor complex if there was no auto-regulation of glucocorticoid receptor, i.e. if there was no effect of the drug on the synthesis of the receptor mRNA? What formula needs to be changed? Adjust the model, run the simulation and plot the results to find out.
 
-Hieronder wordt de tijdsafhankelijkheid van het geactiveerde complex weergegeven wanneer er geen auto-regulatie van de glucocorticoide receptor was. De medicatie (MPL) heeft nu dus geen effect heeft op de synthese van het receptor mRNA. Het model wordt eerst aangepast door de IC50_Rm waarde eruit te halen. 
+Hieronder wordt de tijdsafhankelijkheid van het geactiveerde complex weergegeven wanneer er geen auto-regulatie van de glucocorticoide receptor was. De medicatie (MPL) heeft nu dus geen effect op de synthese van het receptor mRNA. Het model wordt eerst aangepast door de IC50_Rm waarde eruit te halen. 
 
 ```{r}
 # Gedefinieerd model:
@@ -229,10 +229,12 @@ state = c(Rm0=4.74, R0=267, DR=0, DR_N=0)
 t = seq(0, 48, 1)  
 ```
 
-```{r}
+```{r, fig.cap="Uitkomsten van het model wanneer de auto-regulatie weggehaald is uit het model. te zien is dat de concentratie mRNA eerst flink daalt maar vervolgens stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijging eerst sterk totdat ze langzaam aan een klein beetje dalen, vervolgens liggen ze stabiel."}
 # Uitwerking model m.b.v. ode functie:
 out <- ode(y=state, times=t, func=glucocorticoid, parms=parameters)
-plot(out)
+plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
+                   "MPL-complex in the nucleus"),
+     ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
 
 
@@ -248,7 +250,7 @@ plot(out)
 
 2: What is the time dependence of receptor and mRNA concentrations when the drug treatment is stopped? So after the steady state is reached (at time t = t steady ), D should be set to zero and the simulation should continue from time t = t steady till a new steady state is reached (t steady_second ). Run the simulations and plot the results from t = 0 till t steady_second.
 
-Hieronder wordt de tijdsafhankelijkheid van de receptor mRNA concentratie wanneer je stopt met de medicatie weergegeven. Nadat de de reacties gestabiliseerd zijn, steady state, wordt de D waarde op 0 gezet. Hierna wordt een nieuwe evenwichtsverhouding gevormd: t_steady_second. 
+Hieronder wordt de tijdsafhankelijkheid van de receptor mRNA concentratie wanneer er gestopt wordt met de medicatie weergegeven. Nadat de de reacties gestabiliseerd zijn, steady state, wordt de D waarde op 0 gezet. Hierna wordt een nieuwe evenwichtsverhouding gevormd: t_steady_second. 
 
 ```{r}
 # Gedefinieerd model:
@@ -279,13 +281,15 @@ out <- ode(y=state, times=t, func=glucocorticoid, parms=parameters)
 plot(out)
 ```
 
-```{r}
+```{r, fig.cap="Weergegeven is het model wanneer er plotesling gestopt wordt met de medicatie nadat de steady state bereikt is. Met rood stippelijn is de situatie zonder medicatie. Bij de concentraie van het mRNA en de dichtheid van het vrije receptor is er te zien dat dit al vrij snel weer omhoog gaat. Bij het MPL-complex in het cytoplasma en het MPL-complex in de kern daalt het vrij sterk om vervolgens weer stabiel te liggen."}
 parameters[10] <- 0
 steady_state <- 48
 state <- out[steady_state, c("Rm0", "R0", "DR", "DR_N")]
 t <- seq(steady_state, steady_state+steady_state, 1)
 out_2 <- ode(y=state, times=t, func=glucocorticoid, parms=parameters)
-plot(out, out_2)
+plot(out, out_2, main=c("Receptor mRNA", "Free receptor density",
+                        "MPL-comlex","MPL-complex in the nucleus"),
+     ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
 
 
@@ -524,6 +528,9 @@ invloed hebben op de resultaten.
 
 Wat het verschil tussen het model en de data van de experimenten bij de concentratie mRNA receptor zou kunnen verklaren is het feit dat er te
 weining data is uit het experiment. Voor het verschil tussen beide bij de dichtheid in het vrije receptor comlex kan het aan dezelfde reden liggen.
+Het kan ook zo zijn dat de expressie van beta vorm van het MPL-complex \cite{Barnes} bindt op de genen waardoor transcriptie wordt gestopt.
+
+
 
 ## Conclusie 
 Discuss what your goal was, what the end result is and how you could continue working from here.
@@ -533,5 +540,9 @@ Discuss what your goal was, what the end result is and how you could continue wo
 
 \bibitem{Soertaert10}
 Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
+
+\bibitem{Barnes}
+Barnes, P.J. (2011),: \textit {Glucocorticosteroids: current and future directions. British Journal of Pharmacology},
+163: 29-43. https://doi.org/10.1111/j.1476-5381.2010.01199.x
 
 \end{thebibliography}
