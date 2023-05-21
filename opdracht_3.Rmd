@@ -404,7 +404,7 @@ plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_re 5x groter", ylab="[DR(N)] (
 
 
 
-
+ 
 4: What would happen if the synthesis of the receptor was completely blocked? Which parameter needs to be put to zero? Adjust the parameter, run the simulations and plot the results.
 
 Hieronder wordt weergegeven wat de gevolgen van de dynamica in het model zullen zijn wanneer de synthese van het receptor RNA wordt geblokkeerd. De ks_Rm rate zal 0 zijn, omdat er geen enkele synthese meer zal plaatsvinden. 
