@@ -203,13 +203,6 @@ weer rond de 40 uur waar er ook bij een dose van 0.3 een stijging is, alhoewel d
 verandering in de vrije receptor dichtheid langzaam weer af.
 
 
-
-
-
-
-
-
-
 1: What would be the time dependent concentration of the activated drug-receptor complex if there was no auto-regulation of glucocorticoid receptor, i.e. if there was no effect of the drug on the synthesis of the receptor mRNA? What formula needs to be changed? Adjust the model, run the simulation and plot the results to find out.
 
 Hieronder wordt de tijdsafhankelijkheid van het geactiveerde complex weergegeven wanneer er geen auto-regulatie van de glucocorticoide receptor was. De medicatie (MPL) heeft nu dus geen effect op de synthese van het receptor mRNA. Het model wordt eerst aangepast door de IC50_Rm waarde eruit te halen. 
