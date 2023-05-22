@@ -34,11 +34,15 @@ De resultaten die gebruikt gaan worden komen van een studie waar verschillende r
 
 ## Doel
 Bij dit onderzoek wordt het effect van de toediening van methylprednisolon (MPL) bij ratten bestudeerd met behulp van het GR model. Het doel van dit onderzoek is het vergelijken van dit eerdere gemaakte model met de data van de experimenten. Door deze vergelijkingen kan er vervolgens gezegd worden of het model valide is of niet. Om dit doel te halen zullen de resultaten van het model in het zelfde plot gezet worden als de resultaten van het experiment. De hypothese is dat het model valide is. We zullen dan zien dat de experimentele data niet of amper afwijkt van de lijn van ons model. 
+
 Vervolgens wordt het gevalideerde model gebruikt om het effect van bepaalde situaties op de GR dynamica te bestuderen. 
 Er wordt ten eerste gekeken naar de effecten wanneer er geen auto regulatie van het GR plaats vindt. Er wordt verwacht dat er een mindere daling van de hoeveelheid mRNA te zien is, omdat de synthese ervan nu niet wordt geremd. 
+
 Vervolgens wordt er gekeken naar de gevolgen van het stoppen met de glucocorticoiden als medicatie. Er wordt verwacht dat alle waarden weer langzaam terug naar de begin waarden terug keren. 
 Vervolgens wordt er gekeken wat verschillende corticosteroiden als medicatie voor verschillend effect op de dynamica kan hebben. Er wordt verwacht dat er een verschil in de snelheid van het vormen van het complex is en dus de stijlheid van de daling van het mRNA en GR en de stijging van het complex. Hoe hoger kon, hoe sneller de reacties gebeuren en dus hoe stijler de grafiek zal zijn. En hoe hoger kre, hoe sneller het complex weer uit elkaar valt, dus hoe stijler de DR(N) weer daalt. 
+
 Ook wordt er gekeken naar de gevolgen op de GR dynamica, wanneer de mRNA synthese wordt geblokkeerd. Er wordt verwacht dat de mRNA synthese snel op is en dus tot 0 zakt. Ook het GR  en de complexen zullen na een tijdje volledig gebruikt zijn en afgebroken worden tot het op is en dus ook 0 bereiken.
+
 Als laatste wordt er nog gekeken naar het effect wanneer de mRNA synthese snelheid veranderd. Er wordt verwacht dat de stijlheid van de afname van mRNA veranderd, hoe hoger de synthese, hoe stijler de grafiek, en dus hoe sneller complex wordt gevormd. 
 
 
@@ -55,6 +59,7 @@ knitr::include_graphics('model.png')
 
 Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt:
 $$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm} + DR(N)}) - k_{d\_Rm} * mRNA_R$$
+
 
 De concentratie vrije receptor(R) is als volgt af te leiden:
 $$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
