@@ -38,8 +38,9 @@ Bij dit onderzoek wordt het effect van de toediening van methylprednisolon (MPL)
 Vervolgens wordt het gevalideerde model gebruikt om het effect van bepaalde situaties op de GR dynamica te bestuderen. 
 Er wordt ten eerste gekeken naar de effecten wanneer er geen auto regulatie van het GR plaats vindt. Er wordt verwacht dat er een mindere daling van de hoeveelheid mRNA te zien is, omdat de synthese ervan nu niet wordt geremd. 
 
-Vervolgens wordt er gekeken naar de gevolgen van het stoppen met de glucocorticoiden als medicatie. Er wordt verwacht dat alle waarden weer langzaam terug naar de begin waarden terug keren. 
-Vervolgens wordt er gekeken wat verschillende corticosteroiden als medicatie voor verschillend effect op de dynamica kan hebben. Er wordt verwacht dat er een verschil in de snelheid van het vormen van het complex is en dus de stijlheid van de daling van het mRNA en GR en de stijging van het complex. Hoe hoger kon, hoe sneller de reacties gebeuren en dus hoe stijler de grafiek zal zijn. En hoe hoger kre, hoe sneller het complex weer uit elkaar valt, dus hoe stijler de DR(N) weer daalt. 
+Daarna wordt er gekeken naar de gevolgen van het stoppen met de glucocorticoiden als medicatie. Er wordt verwacht dat alle waarden weer langzaam terug naar de begin waarden terug keren. 
+
+Er wordt ook gekeken wat verschillende corticosteroiden als medicatie voor verschillend effect op de dynamica kan hebben. Er wordt verwacht dat er een verschil in de snelheid van het vormen van het complex is en dus de stijlheid van de daling van het mRNA en GR en de stijging van het complex. Hoe hoger kon, hoe sneller de reacties gebeuren en dus hoe stijler de grafiek zal zijn. En hoe hoger kre, hoe sneller het complex weer uit elkaar valt, dus hoe stijler de DR(N) weer daalt. 
 
 Ook wordt er gekeken naar de gevolgen op de GR dynamica, wanneer de mRNA synthese wordt geblokkeerd. Er wordt verwacht dat de mRNA synthese snel op is en dus tot 0 zakt. Ook het GR  en de complexen zullen na een tijdje volledig gebruikt zijn en afgebroken worden tot het op is en dus ook 0 bereiken.
 
@@ -146,7 +147,7 @@ names(medians)[1:2] <- c("dose", "time")
 
 Vervolgens is dit geplot.
 
-```{r, figure.cap = "Uitkomsten van het model vergeleken met de resultaten van het experiment. In beide gevallen laat het model eerst een sterke daling zien van het receptor mRNA, vervolgens klimt het omhoog om uiteindelijk te stabiliseren. De resultaten van de experimenten dalen ook sterk, maar stabiliseren niet. Bij de vrije receptor dichtheid is er ook een sterke daling, deze klimt niet meer omhoog maar trekt stabiel rond de 50 fmol/mg. De resultaten van de experimenten laten dezelfde daling zien maar stijgt na 50 uur weer een beetje om vervolgens langzaam verder te dalen, het ligt niet stabiel."}
+```{r, fig.cap = "Uitkomsten van het model vergeleken met de resultaten van het experiment. In beide gevallen laat het model eerst een sterke daling zien van het receptor mRNA, vervolgens klimt het omhoog om uiteindelijk te stabiliseren. De resultaten van de experimenten dalen ook sterk, maar stabiliseren niet. Bij de vrije receptor dichtheid is er ook een sterke daling, deze klimt niet meer omhoog maar trekt stabiel rond de 50 fmol/mg. De resultaten van de experimenten laten dezelfde daling zien maar stijgt na 50 uur weer een beetje om vervolgens langzaam verder te dalen, het ligt niet stabiel."}
 layout(matrix(c(1 ,2, 3, 4), ncol = 2, nrow = 2, byrow = TRUE))
 
 plot(dose_1[,"Rm0"], type = "l", ylim = c(0.5, 5), main = "mRNA of receptor for a dose of 0.1",
