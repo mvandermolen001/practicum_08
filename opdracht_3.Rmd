@@ -259,6 +259,8 @@ plot(out, out_2, main=c("Receptor mRNA", "Free receptor density",
 
 Er is te zien dat wanneer er gestopt wordt met de medicatie, alle waardes langzaam terug gaan naar de begin waardes gaan. Nadat deze waardes bereikt zijn, stabiliseren de waardes weer en hebben ze dus een tweede steady state bereikt.
 
+\newpage
+
 ### Situatie: Verschillende corticosteroiden als medicijn
 
 Er zijn verschillende corticosteroiden die je als medicijn kunt gebruiken. Ze verschillen in hun kon rate, dit is de snelheid waarmee ze de receptoren herkennen en hun kre rate, dit is de snelheid waarmee het complex weer uit elkaar valt. Er zal worden gekeken wat het effect van verschillende kon en kre rates voor invloed hebben op de receptor en mRNA dynamics. We gaan kijken naar een 2x en 5x verhoging en verlaging van beide rates.
