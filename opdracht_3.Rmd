@@ -248,7 +248,7 @@ plot(out, out_2, main=c("Receptor mRNA", "Free receptor density",
 
 Er is te zien dat wanneer er gestopt wordt met de medicatie, alle waardes langzaam terug gaan naar de begin waardes gaan. Nadat deze waardes bereikt zijn, stabiliseren de waardes weer en hebben ze dus een tweede steady state bereikt.
 
-\newpage
+
 
 ### Situatie: Verschillende corticosteroiden als medicijn
 
