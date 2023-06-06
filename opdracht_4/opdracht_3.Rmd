@@ -34,18 +34,23 @@ De resultaten die gebruikt gaan worden komen van een studie waar verschillende r
 
 ## Doel
 Bij dit onderzoek wordt het effect van de toediening van methylprednisolon (MPL) bij ratten bestudeerd met behulp van het GR model. Het doel van dit onderzoek is het vergelijken van dit eerdere gemaakte model met de data van de experimenten. Door deze vergelijkingen kan er vervolgens gezegd worden of het model valide is of niet. Om dit doel te halen zullen de resultaten van het model in het zelfde plot gezet worden als de resultaten van het experiment. De hypothese is dat het model valide is. We zullen dan zien dat de experimentele data niet of amper afwijkt van de lijn van ons model. 
+
 Vervolgens wordt het gevalideerde model gebruikt om het effect van bepaalde situaties op de GR dynamica te bestuderen. 
 Er wordt ten eerste gekeken naar de effecten wanneer er geen auto regulatie van het GR plaats vindt. Er wordt verwacht dat er een mindere daling van de hoeveelheid mRNA te zien is, omdat de synthese ervan nu niet wordt geremd. 
-Vervolgens wordt er gekeken naar de gevolgen van het stoppen met de glucocorticoiden als medicatie. Er wordt verwacht dat alle waarden weer langzaam terug naar de begin waarden terug keren. 
-Vervolgens wordt er gekeken wat verschillende corticosteroiden als medicatie voor verschillend effect op de dynamica kan hebben. Er wordt verwacht dat er een verschil in de snelheid van het vormen van het complex is en dus de stijlheid van de daling van het mRNA en GR en de stijging van het complex. Hoe hoger kon, hoe sneller de reacties gebeuren en dus hoe stijler de grafiek zal zijn. En hoe hoger kre, hoe sneller het complex weer uit elkaar valt, dus hoe stijler de DR(N) weer daalt. 
+
+Daarna wordt er gekeken naar de gevolgen van het stoppen met de glucocorticoiden als medicatie. Er wordt verwacht dat alle waarden weer langzaam terug naar de begin waarden terug keren. 
+
+Er wordt ook gekeken wat verschillende corticosteroiden als medicatie voor verschillend effect op de dynamica kan hebben. Er wordt verwacht dat er een verschil in de snelheid van het vormen van het complex is en dus de steilheid van de daling van het mRNA en GR en de stijging van het complex. Hoe hoger kon, hoe sneller de reacties gebeuren en dus hoe steiler de grafiek zal zijn. En hoe hoger kre, hoe sneller het complex weer uit elkaar valt, dus hoe steiler de DR(N) weer daalt. 
+
 Ook wordt er gekeken naar de gevolgen op de GR dynamica, wanneer de mRNA synthese wordt geblokkeerd. Er wordt verwacht dat de mRNA synthese snel op is en dus tot 0 zakt. Ook het GR  en de complexen zullen na een tijdje volledig gebruikt zijn en afgebroken worden tot het op is en dus ook 0 bereiken.
-Als laatste wordt er nog gekeken naar het effect wanneer de mRNA synthese snelheid veranderd. Er wordt verwacht dat de stijlheid van de afname van mRNA veranderd, hoe hoger de synthese, hoe stijler de grafiek, en dus hoe sneller complex wordt gevormd. 
+
+Als laatste wordt er nog gekeken naar het effect wanneer de mRNA synthese snelheid veranderd. Er wordt verwacht dat de steilheid van de afname van mRNA veranderd, hoe hoger de synthese, hoe steiler de grafiek, en dus hoe sneller complex wordt gevormd. 
 
 
 ## Theorie
 Het biologisch model dat gebruikt wordt, is hieronder te zien in figuur 1. In dit model wordt beschreven dat het receptor mRNA (mRNAR) beinvloed wordt door de synthese van het mRNA(ks_Rm) en de degradatie van het mRNA(kd_Rm). R is de vrije glucocorticoide receptor dichtheid in het cytostol, hier beschrijft ks_R de synthese van de glucocorticoide receptor, en kd_R beschrijft de afbraak ervan.
 
-R wordt ook beinvloed door de aanmaak van het glucocorticoide receptor complex (DR) en de hoeveelheid van dit complex in de nucleus (DR(N)). Kon is de vorming van DR, kT zegt iets over het verplaatsen van DR naar de celkern. Een deel van DR(N) wordt weer terug gebracht naar het cytostol kre, maar een deel van kre komt niet meer terug. Rf is de fractie van de vrije receptor die opnieuw gebruikt wordt. IC50_Rm is de concentratie van DR(N) waarbij de aanmaak van het receptor mRNA daalt tot 50% van de basis waarde.
+R wordt ook beinvloed door de aanmaak van het glucocorticoide receptor complex (DR) en de hoeveelheid van dit complex in de nucleus (DR(N)). Kon is de snelheidsconstante voor de vorming van DR, kT zegt iets over het verplaatsen van DR naar de celkern. Een deel van DR(N) wordt weer terug gebracht naar het cytostol kre, maar een deel van kre komt niet meer terug. Rf is de fractie van de vrije receptor die opnieuw gebruikt wordt. IC50_Rm is de concentratie van DR(N) waarbij de aanmaak van het receptor mRNA daalt tot 50% van de basis waarde.
 
 D is de concentratie van MPL in molair.
 
@@ -55,6 +60,7 @@ knitr::include_graphics('model.png')
 
 Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt:
 $$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm} + DR(N)}) - k_{d\_Rm} * mRNA_R$$
+
 
 De concentratie vrije receptor(R) is als volgt af te leiden:
 $$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
@@ -86,7 +92,21 @@ glucocorticoid <- function(t,state,parms){
     return(list(c(dmRNAR, dR, dDR, dDR_N)))})}
 ```
 
+Ook wordt een model gebruikt die niet de functie voor de auto regulatie bevat
 
+```{r}
+# Geredefinieerd model zonder IC50_Rm parameter:
+glucocorticoid_no_auto_regulation <- function(t,state,parms){
+  with(as.list(c(state, parms)),{
+    dmRNAR <- ks_Rm - kd_Rm * Rm0
+    dR <- ks_R * Rm0 + Rf * kre * DR_N - kon * D * R0 - kd_R * R0
+    dDR <- kon * D * R0 - kT * DR
+    dDR_N <- kT * DR - kre * DR_N
+    return(list(c(dmRNAR, dR, dDR, dDR_N)))
+  }
+  )
+}
+```
 
 ## Model configuratie
 
@@ -127,21 +147,20 @@ parameters <- c(ks_Rm=2.9, kd_Rm=0.612, ks_R=3.22, kd_R=0.0572, kon=0.00329, kT=
 dose_3 <- ode(times = times, y = state, parms = parameters, func = glucocorticoid)
 ```
 
-
-# Resultaten
-
-## Valideren van het model
-Omdat het model per uur maar 1 waarde heeft maar de data niet, is eerst de mediaan uitgerekend per tijdseenheid.
-
+Voor het valideren van het model moet er een mediaan per tijdseenheid komen
 ```{r}
 medians <- aggregate(data[,c("MPL_conc", "mRNA", "Free_receptor")],
 list(data$dose,data$time), median, na.rm=TRUE)
 names(medians)[1:2] <- c("dose", "time")
 ```
 
-Vervolgens is dit geplot.
+# Resultaten
 
-```{r, figure.cap = "Uitkomsten van het model vergeleken met de resultaten van het experiment. In beide gevallen laat het model eerst een sterke daling zien van het receptor mRNA, vervolgens klimt het omhoog om uiteindelijk te stabiliseren. De resultaten van de experimenten dalen ook sterk, maar stabiliseren niet. Bij de vrije receptor dichtheid is er ook een sterke daling, deze klimt niet meer omhoog maar trekt stabiel rond de 50 fmol/mg. De resultaten van de experimenten laten dezelfde daling zien maar stijgt na 50 uur weer een beetje om vervolgens langzaam verder te dalen, het ligt niet stabiel."}
+## Valideren van het model
+
+Het plotten van de verkregen mediaan per tijdseenheid van de data wordt hier geplot tegen het model. Dit wordt gedaan voor het valideren van het model.
+
+```{r, fig.cap = "Uitkomsten van het model vergeleken met de resultaten van het experiment. In beide gevallen laat het model eerst een sterke daling zien van het receptor mRNA, vervolgens klimt het omhoog om uiteindelijk te stabiliseren. De resultaten van de experimenten dalen ook sterk, maar stabiliseren niet. Bij de vrije receptor dichtheid is er ook een sterke daling, deze klimt niet meer omhoog maar trekt stabiel rond de 50 fmol/mg. De resultaten van de experimenten laten dezelfde daling zien maar stijgt na 50 uur weer een beetje om vervolgens langzaam verder te dalen, het ligt niet stabiel."}
 layout(matrix(c(1 ,2, 3, 4), ncol = 2, nrow = 2, byrow = TRUE))
 
 plot(dose_1[,"Rm0"], type = "l", ylim = c(0.5, 5), main = "mRNA of receptor for a dose of 0.1",
@@ -176,6 +195,7 @@ Terwijl het model bij het receptor mRNA stabiliseerd is er te zien dat bij de da
 
 De vergelijking tussen het model en de vrije receptor dichtheid bij een dose van 0.1 lijkt beter aangesloten bij elkaar. Het model laat in de eerste paar uur alleen maar een daling zien, terwijl in de data hier wel een kleine stijging tussen zit. Ook laat het model alleen maar een stabiele lijn zien na ongeveer 40 uur vergeleken met het model dit rond de 40 uur nog een stijging laat zien om vervolgens weer langzaam te dalen. Bij de vergelijkingen tussen het model en de data met een dose van 0.3 is eerst een daling in beide gevallen. Waar deze met elkaar verschillen is weer rond de 40 uur waar er ook bij een dose van 0.3 een stijging is, alhoewel deze stijging minder sterk lijkt te zien, vervolgens daalt de verandering in de vrije receptor dichtheid langzaam weer af.
 
+\newpage
 
 ## Simulaties met het model
 
@@ -200,52 +220,23 @@ plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
 ```
 
 
-```{r}
-# Geredefinieerd model zonder IC50_Rm parameter:
-glucocorticoid <- function(t,state,parms){
-  with(as.list(c(state, parms)),{
-    dmRNAR <- ks_Rm - kd_Rm * Rm0
-    dR <- ks_R * Rm0 + Rf * kre * DR_N - kon * D * R0 - kd_R * R0
-    dDR <- kon * D * R0 - kT * DR
-    dDR_N <- kT * DR - kre * DR_N
-    return(list(c(dmRNAR, dR, dDR, dDR_N)))
-  }
-  )
-}
-```
 
-
-```{r, fig.cap="Uitkomsten van het model wanneer de auto-regulatie weggehaald is uit het model. Te zien is dat de concentratie mRNA gelijk een klein beetje daalt en vervolgens stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijgen eerst sterk totdat ze langzaamaan een klein beetje dalen, vervolgens liggen ze stabiel."}
+```{r, fig.cap="Uitkomsten van het model wanneer de auto-regulatie weggehaald is uit het model. Te zien is dat de concentratie mRNA gelijk daalt en vervolgens stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijgen eerst sterk totdat ze langzaam aan dalen, vervolgens liggen ze stabiel."}
 # Uitwerking model m.b.v. ode functie:
-out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
+out <- ode(y=state, times=times, func=glucocorticoid_no_auto_regulation, parms=parameters)
 plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
                    "MPL-complex in the nucleus"),
      ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
+
 De verandering van de concentratie van het mRNA van de receptor is veel lager dan het orginele model. De auto regulatie is er immers af dus deze daling is alleen te danken aan het feit dat mRNA ook automatisch het systeem verlaat.
 
-\newpage
 
 ### Situatie: Medicatie wordt gestopt
 
 Hieronder wordt de tijdsafhankelijkheid van de receptor mRNA concentratie wanneer er gestopt wordt met de medicatie weergegeven. Nadat de de reacties gestabiliseerd zijn, steady state, wordt de D waarde op 0 gezet. Hierna wordt een nieuwe evenwichtsverhouding gevormd: t_steady_second. 
 
-```{r}
-# Gedefinieerd model:
-glucocorticoid <- function(t,state,parms){
-  with(as.list(c(state, parms)),{
-    dmRNAR <- ks_Rm * (1 - DR_N/(IC50_Rm + DR_N)) - kd_Rm * Rm0
-    dR <- ks_R * Rm0 + Rf * kre * DR_N - kon * D * R0 - kd_R * R0
-    dDR <- kon * D * R0 - kT * DR
-    dDR_N <- kT * DR - kre * DR_N
-    return(list(c(dmRNAR, dR, dDR, dDR_N)))
-  }
-  )
-}
-```
-
-
-```{r, fig.cap="Weergegeven is het model wanneer er plotesling gestopt wordt met de medicatie nadat de steady state bereikt is. Met zwart is de situatie tot het bereiken van een steady state inder invloed van medicatie weergegeven. Met rood stippellijn is het verloop van de situatie daarna zonder medicatie weergegeven. Bij de concentratie van het mRNA en de dichtheid van het vrije receptor, is er te zien dat dit al vrij snel weer omhoog gaat tot de beginwaarde (t=0). Bij het MPL-complex in het cytoplasma en het MPL-complex in de kern daalt het vrij sterk tot de begintwaarde (t=0) is bereikt."}
+```{r, fig.cap="Weergegeven is het model wanneer er plotesling gestopt wordt met de medicatie nadat de steady state bereikt is. Met zwart is de situatie tot het bereiken van een steady state onder invloed van medicatie weergegeven. Met rood stippellijn is het verloop van de situatie daarna zonder medicatie weergegeven. Bij de concentratie van het mRNA en de dichtheid van het vrije receptor, is er te zien dat dit al vrij snel weer omhoog gaat tot de beginwaarde (t=0). Bij het MPL-complex in het cytoplasma en het MPL-complex in de kern daalt het vrij sterk tot de begintwaarde (t=0) is bereikt."}
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
 parameters[10] <- 0
 steady_state <- 48
@@ -259,7 +250,7 @@ plot(out, out_2, main=c("Receptor mRNA", "Free receptor density",
 
 Er is te zien dat wanneer er gestopt wordt met de medicatie, alle waardes langzaam terug gaan naar de begin waardes gaan. Nadat deze waardes bereikt zijn, stabiliseren de waardes weer en hebben ze dus een tweede steady state bereikt.
 
-\newpage
+
 
 ### Situatie: Verschillende corticosteroiden als medicijn
 
@@ -277,7 +268,7 @@ t <- seq(0, 48, 1)
 
 #### Versie 0: normale werking
 
-```{r, fig.cap="Te zijn hierboven is het model zonder aanpassing van de waardes. De association rate en de dissociation rate zijn de eerder gezette standaard. Te zien in de grafiek is dat de concentratie van het mRNA eerst sterk daalt, langzaam weer stijgt en uiteindelijk stabiliseerd. De dichtheid in de vrije receptor daalt langzaam en valt uiteindelijk ook in een steady state. Voor zowel de concentratie van het MPL-complex binnen en buiten de kern geldt eerst een stijging en vervolgens een daling waarna het ook in een steady state valt."}
+```{r, fig.cap="Te zien hierboven is het model zonder aanpassing van de waardes. De association rate en de dissociation rate zijn de eerder gezette standaard. Te zien in de grafiek is dat de concentratie van het mRNA eerst sterk daalt, langzaam weer stijgt en uiteindelijk stabiliseerd. De dichtheid in de vrije receptor daalt langzaam en valt uiteindelijk ook in een steady state. Voor zowel de concentratie van het MPL-complex binnen en buiten de kern geldt eerst een stijging en vervolgens een daling waarna het ook in een steady state valt."}
 # Uitwerking model m.b.v. ode functie:
 out <- ode(y=state, times=t, func=glucocorticoid, parms=parameters)
 plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
@@ -285,47 +276,65 @@ plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
      ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
 
+
 #### Versie 1: k on : 0.00329/5, 0.00329/2, 0.00329*2 and 0.00329*5
 
 ```{r, fig.cap="In de figuren hieronder is te zien wat er gebeurt met de 4 eerder genoemde factoren wanneer kon 2x en 5x kleiner is en daarna 2x en 5x groter is. Voor wanneer de kon kleiner is, geldt een langzamere daling voor het mRNA van de receptor en een meer geleidelijke daling van de vrije receptor dichtheid. Voor zowel de concentratie van het MPL-complex binnen en buiten de kern geldt eerst een sterke stijging, gevolgd door een daling, en vervolgens wordt weer een steady state bereikt. Wanneer k_on groter wordt gemaakt wordt er een sterkere daling gezien in het mRNA van de receptor aan het begin maar ook een snellere stijging en dus wordt ook de steady state sneller bereikt. De dichtheid van het vrije receptor daalt sterk en bereikt de steady state eerder. Voor zowel de concentratie van het MPL-complex binnen en buiten de kern geldt een erg sterke stijging in concentratie gevolgd door een sterke daling waarna het de steady state bereikt."}
 par(mfrow = c(2, 4))
 parameters[5] <- 0.00329/5
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
-plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 5x kleiner", ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
-plot(out[, "R0"], type = "l", main = "[R] k_on 5x kleiner", ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR"], type = "l", main = "[DR] k_on 5x kleiner", ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 5x kleiner", ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 5x kleiner", 
+     ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
+plot(out[, "R0"], type = "l", main = "[R] k_on 5x kleiner",
+     ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR"], type = "l", main = "[DR] k_on 5x kleiner",
+     ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 5x kleiner",
+     ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
 parameters[5] <- 0.00329/2
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
-plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 2x kleiner", ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
-plot(out[, "R0"], type = "l", main = "[R] k_on 2x kleiner", ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR"], type = "l", main = "[DR] k_on 2x kleiner", ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 2x kleiner", ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 2x kleiner",
+     ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
+plot(out[, "R0"], type = "l", main = "[R] k_on 2x kleiner",
+     ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR"], type = "l", main = "[DR] k_on 2x kleiner",
+     ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 2x kleiner",
+     ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
 par(mfrow = c(2, 4))
 parameters[5] <- 0.00329*2
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
-plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 2x groter", ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
-plot(out[, "R0"], type = "l", main = "[R] k_on 2x groter", ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR"], type = "l", main = "[DR] k_on 2x groter", ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 2x groter", ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 2x groter",
+     ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
+plot(out[, "R0"], type = "l", main = "[R] k_on 2x groter",
+     ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR"], type = "l", main = "[DR] k_on 2x groter",
+     ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 2x groter",
+     ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
 parameters[5] <- 0.00329*5
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
-plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 5x groter", ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
-plot(out[, "R0"], type = "l", main = "[R] k_on 5x groter", ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR"], type = "l", main = "[DR] k_on 5x groter", ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
-plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 5x groter", ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "Rm0"], type = "l", main = "[mRNAR] k_on 5x groter",
+     ylab="[mRNAR] (fmol/g)", xlab= "Tijd (uren)")
+plot(out[, "R0"], type = "l", main = "[R] k_on 5x groter",
+     ylab="[R] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR"], type = "l", main = "[DR] k_on 5x groter",
+     ylab="[DR] (fmol/mg)", xlab= "Tijd (uren)")
+plot(out[, "DR_N"], type = "l", main = "[DR(N)] k_on 5x groter",
+     ylab="[DR(N)] (fmol/mg)", xlab= "Tijd (uren)")
 ```
 
 Wanneer de 'rate of association' kleiner is, is er te zien dat de daling van het mRNA van de receptor, en de stijging van het MPL-complex in de kern en buiten de kern sterker is dan bij het normale model. De verandering in de hoeveelheden zijn ook kleiner voor het MPL-complex. De steady state van het MPL-complex binnen en buiten de kern wordt bereikt rond een kleinere waarde. Hoe kleiner de 'rate of association', hoe kleiner de waardes.
 
 Interessant hier is dat bij de 5x kleinere waarde van het k_on de steady state niet bereikt wordt binnen de 7 dagen.
 
-Wanneer de 'rate of association' groter is, gaat de daling van het mRNA van de receptor nog sneller, maar hier geldt wel dat de stijging daarna ook weer sneller gaat. De steady state wordt ten opzichte van het normale model veel sneller bereikt. De daling van de dichtheid van de vrije receptor is veel sneller en het blijft op de waarde 0. Als er gekeken wordt na het orginele model ten opzichte van dit model is de stijging van het MPL-complex binnen en buiten de kern veel stijler, en dus sneller. De daling komt even snel en uiteindelijk stabieliseerd alles weer. Hier geldt dat de waardes van verandering in concentratie hoger zijn dan bij het orginele model. 
+Wanneer de 'rate of association' groter is, gaat de daling van het mRNA van de receptor nog sneller, maar hier geldt wel dat de stijging daarna ook weer sneller gaat. De steady state wordt ten opzichte van het normale model veel sneller bereikt. De daling van de dichtheid van de vrije receptor is veel sneller en het blijft op de waarde 0. Als er gekeken wordt na het orginele model ten opzichte van dit model is de stijging van het MPL-complex binnen en buiten de kern veel steiler, en dus sneller. De daling komt even snel en uiteindelijk stabieliseerd alles weer. Hier geldt dat de waardes van verandering in concentratie hoger zijn dan bij het orginele model. 
 
 Bij het groter worden van de 'rate of association' wordt er ook gezien dat de dichtheid van de vrije receptor sneller daalt.
 
+
 #### Versie 2: k re : 0.57/5, 0.57/2, 0.57*2 and 0.57*5
-```{r, fig.cap="Hierboven weergeven is het model wanneer kre 2x en 5x kleiner wordt gemaakt en wanneer 2x en 5x groter wordt gemaakt. Wanneer k_re 2x en 5x kleiner wordt gemaakt geldt bij zowel de concentratie mRNA en de dichtheid van de vrije receptor een erg sterke daling binnen 10 uur. Dit komt eerder bij de dichtheid van het vrije receptor complex. Het mRNA van de receptor klimt wel weer omhoog om vervolgens op een steady state terecht te komen, de dichtheid van de vrije receptor heeft geen stijging meer. Bij de concentratie MPL-complex binnen en buiten de kern wordt gezien dat er eerst een sterke stijging is, gevolgd door een bijna net zo snelle daling, beide komen rond de zelfde tijd in een steady state terecht. Wanneer k_re 2x en 5x groter wordt gemaakt zien we eigenlijk hetzelfde."}
+```{r, fig.cap="Hierboven weergeven is het model wanneer kre 2x en 5x kleiner wordt gemaakt en wanneer kre 2x en 5x groter wordt gemaakt. Wanneer k_re 2x en 5x kleiner wordt gemaakt geldt bij zowel de concentratie mRNA als de dichtheid van de vrije receptor een erg sterke daling binnen 10 uur. Het mRNA van de receptor klimt wel weer omhoog om vervolgens op een steady state terecht te komen, de dichtheid van de vrije receptor heeft geen stijging meer. Bij de concentratie MPL-complex binnen en buiten de kern wordt gezien dat er eerst een sterke stijging is, gevolgd door een bijna net zo snelle daling, beide komen rond dezelfde tijd in een steady state terecht. Wanneer k_re 2x en 5x groter wordt gemaakt zien we eigenlijk hetzelfde."}
 parameters <- c(ks_Rm=2.9, kd_Rm=0.612, ks_R=3.22, kd_R=0.0572, kon=0.00329, kT=0.63, kre=0.57, Rf=0.49, IC50_Rm=26.2, D=53.41)
 par(mfrow = c(2, 4))
 parameters[5] <- 0.57/5
@@ -366,7 +375,7 @@ Bij het groter worden van de k_re zijn er niet veel verandering in de reacties. 
 In de volgende simulatie wordt weergegeven wat de gevolgen van de dynamica in het model zullen zijn, wanneer de synthese van het receptor mRNA wordt geblokkeerd. De ks_Rm rate zal 0 zijn, omdat er geen enkele synthese meer zal plaatsvinden. 
 
 
-```{r, fig.cap="In het figuur is te zien hoe de dynamica er onder normale condities uit ziet. Te zien is dat de concentratie mRNA langzaam gaat dalen, vervolgens een een stukje weer stijgt en daarna stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijging eerst sterk totdat ze langzaam aan een klein beetje dalen, vervolgens liggen ze stabiel."}
+```{r, fig.cap="In het figuur is te zien hoe de dynamica er onder normale condities uit ziet. Te zien is dat de concentratie mRNA langzaam gaat dalen, vervolgens weer stijgt en daarna stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijgen eerst sterk totdat ze langzaam aan een wat dalen, vervolgens liggen ze stabiel."}
 # Normale werking:
 parameters <- c(ks_Rm=2.9, kd_Rm=0.612, ks_R=3.22, kd_R=0.0572, kon=0.00329, kT=0.63, kre=0.57, Rf=0.49, IC50_Rm=26.2, D=53.41)
 out <- ode(y=state, times=times, func=glucocorticoid, parms=parameters)
@@ -375,7 +384,7 @@ plot(out, main=c("Receptor mRNA", "Free receptor density",
      ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
 
-```{r, fig.cap="In het figuur te zien hoe de dynamica er uit ziet wanneer de mRNA synthese van het receptor eiwit compleet stopt. Te zien is dat het mRNA van de receptor gelijk daalt tot het op is. In de dichtheid van de vrije receptoren zien we hetzelfde patroon, een langzame daling totdat ze volledig op zijn. Bij het MPL-complex in het cytoplasma en in de kern wordt eerst een sterke stijging gezien vervolgens een langzame daling totdat ook deze complexen op zijn. Alles eindig dus in een steady state van 0."}
+```{r, fig.cap="In het figuur te zien hoe de dynamica er uit ziet wanneer de mRNA synthese van het receptor eiwit compleet stopt. Te zien is dat het mRNA van de receptor gelijk daalt tot het op is. In de dichtheid van de vrije receptoren zien we hetzelfde patroon, een langzame daling totdat ze volledig op zijn. Bij het MPL-complex in het cytoplasma en in de kern wordt eerst een sterke stijging gezien vervolgens een langzame daling totdat ook deze complexen op zijn. Alles eindigt dus in een steady state van 0."}
 # Verstoorde werking door stoppen van de receptor RNA synthese.
 parameters[1] <- 0
 out <- ode(y=state, times=t, func=glucocorticoid, parms=parameters)
@@ -498,5 +507,8 @@ Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential
 \bibitem{Barnes}
 Barnes, P.J. (2011),: \textit {Glucocorticosteroids: current and future directions. British Journal of Pharmacology},
 163: 29-43. https://doi.org/10.1111/j.1476-5381.2010.01199.x
+
+\bibitem{Pander}
+Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander
 
 \end{thebibliography}
