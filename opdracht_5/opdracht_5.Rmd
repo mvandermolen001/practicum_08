@@ -1,0 +1,99 @@
+---
+title: 'Valideren en simulatie van glucocorticosteroide model'
+author: "Margriet van der Molen en Yvanka Gerdez"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: yes
+    toc: true
+    fig_caption: true
+  html_document:
+    df_print: paged
+header-includes:
+- \usepackage{longtable}
+- \usepackage{hyperref}
+linkcolor: blue
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pander)
+```
+
+
+# Introductie
+Als er gepraat wordt over de pest, wordt al snel gedacht aan de middeleeuwen. Toch is de pest vormt de huidige eeuw nog steeds een gevaar. Dit was te zien aan een uitbraak van de pest in Madagascar in 2017. Deze uitbraak heerste van augustus tot november\cite{Kinh}. Tijdens deze uitbraak waren er 2417 gevallen van de pest, en 209 mensen kwamen om het leven door de pest. Het risico op nog een uitbraak bestaat nog altijd en omwille van betere preventie , is het belangrijk dat er gekeken wordt naar hoe de pest zich verspreidt en in welke vormen de ziekte voorkomt onder mensen. 
+
+De pest wordt veroorzaakt door de bacterie Yersinia pestis, deze bacterie mag zich graag vestigen op kleine zoogdieren maar ook vlooien\cite{WHO}. Deze bacterie komt in mensen terecht door een bijt van een geinfecteerde vlooi, onbeschermd contact met geinfecteerd materiaal, of het inademen van kleine deeltjes die van een patient met longpest. 
+
+De World Health Organisation spreekt over 2 vormen van een pest infectie. De builenpest, deze infectie is de meest voorkomende infectie soort. Y. pestis komt binnen door een bijt van een vlooi en komt zo in het lymfen systeem terecht. Eenmaal in dit systeem veroorzaakt het een ontstekingen in de lymfe knopen. De builenpest kan leiden tot de volgende vorm van de pest, longpest. De longpest de meeste virulente vorm de pest, en incubatie kan al voorkomen binnen 24 uur.
+
+Alhoewel de pest nog steeds een gevaar blijft in verschillende landen is de behandeling ervan goed te doen met veel voorkomende soorten antibiotica. Deze behandling werkt alleen wanneer diagnose vroeg verkregen kan worden.
+
+\newpage
+
+#Doel
+Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
+de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
+\newpage
+
+## Theorie
+
+### Het model
+Met de kennis die ervan de pest is, is het volgende model opgesteld.
+
+```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van glucocoritcoide receptor dynamica"}
+knitr::include_graphics('model.png')
+```
+
+
+### De formules
+Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt:
+$$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm} + DR(N)}) - k_{d\_Rm} * mRNA_R$$
+
+
+De concentratie vrije receptor(R) is als volgt af te leiden:
+$$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
+
+De concentratie receptor complex(DR) is als volgt af te leiden:
+$$\frac{dDR}{dt} = k_{on} * D *R - k_t * DR$$
+
+De concentratie receptor complex(DR(N)) in de kern is als volgt af te leiden:
+$$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
+
+
+
+# Methode
+
+## Het software model
+
+
+## Model configuratie
+
+
+# Resultaten
+
+
+# Discussie en Conclusie
+## Discussie
+
+
+## Conclusie 
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Soertaert10}
+Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
+
+\bibitem{Kinh}
+Kinh Nguyen, V., Parra-Rojas, C., &amp;  Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001 
+
+\bibitem{WHO}
+World Health Organization.:\textit Plague. World Health Organization). https://www.who.int/news-room/fact-sheets/detail/plague#:~:text=Plague%20is%20caused%20by%20the,plague%20infection%3A%20bubonic%20and%20pneumonic. 
+
+\bibitem{Pander}
+Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander
+
+\end{thebibliography}
