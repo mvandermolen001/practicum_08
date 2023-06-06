@@ -36,6 +36,7 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen is de beha
 #Doel
 Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
 de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
+
 \newpage
 
 ## Theorie
@@ -43,8 +44,8 @@ de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
 ### Het model
 Met de kennis die ervan de pest is, is het volgende model opgesteld.
 
-```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van glucocoritcoide receptor dynamica"}
-knitr::include_graphics('model.png')
+```{r, echo=FALSE, out.width='95%', fig.cap=""Flowchart van het PTM\cite{Kinh}. Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
+knitr::include_graphics('plague_model.jpg')
 ```
 
 
