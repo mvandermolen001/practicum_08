@@ -3,12 +3,12 @@ title: 'Valideren en simulatie van glucocorticosteroide model'
 author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     number_sections: yes
     toc: true
     fig_caption: true
-  html_document:
-    df_print: paged
 header-includes:
 - \usepackage{longtable}
 - \usepackage{hyperref}
