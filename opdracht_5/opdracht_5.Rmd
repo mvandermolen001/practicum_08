@@ -23,19 +23,18 @@ library(pander)
 
 
 # Introductie
-Als er gepraat wordt over de pest, wordt al snel gedacht aan de middeleeuwen. Toch is de pest vormt de huidige eeuw nog steeds een gevaar. Dit was te zien aan een uitbraak van de pest in Madagascar in 2017. Deze uitbraak heerste van augustus tot november\cite{Kinh}. Tijdens deze uitbraak waren er 2417 gevallen van de pest, en 209 mensen kwamen om het leven door de pest. Het risico op nog een uitbraak bestaat nog altijd en omwille van betere preventie , is het belangrijk dat er gekeken wordt naar hoe de pest zich verspreidt en in welke vormen de ziekte voorkomt onder mensen. 
+Als er gepraat wordt over de pest, wordt al snel gedacht aan de middeleeuwen. Toch is de pest in de huidige eeuw nog steeds een gevaar. Dit was te zien aan een uitbraak van de pest in Madagascar in 2017. Deze uitbraak heerste van augustus tot november\cite{Kinh}. Tijdens deze uitbraak waren er 2417 gevallen van de pest, en 209 mensen kwamen om het leven door de pest. Het risico op nog een uitbraak bestaat nog altijd en omwille van betere preventie, is het belangrijk dat er gekeken wordt naar hoe de pest zich verspreidt en in welke vormen de ziekte voorkomt onder mensen. 
 
-De pest wordt veroorzaakt door de bacterie Yersinia pestis, deze bacterie mag zich graag vestigen op kleine zoogdieren maar ook vlooien\cite{WHO}. Deze bacterie komt in mensen terecht door een bijt van een geinfecteerde vlooi, onbeschermd contact met geinfecteerd materiaal, of het inademen van kleine deeltjes die van een patient met longpest. 
+De pest wordt veroorzaakt door de bacterie *Yersinia pestis*, deze bacterie mag zich graag vestigen op kleine zoogdieren maar ook vlooien\cite{WHO}. Deze bacterie komt in mensen terecht door een bijt van een geinfecteerde vlooi, onbeschermd contact met geinfecteerd materiaal, of het inademen van kleine deeltjes die afkomstig zijn van een patient met longpest. 
 
-De World Health Organisation spreekt over 2 vormen van een pest infectie. De builenpest, deze infectie is de meest voorkomende infectie soort. Y. pestis komt binnen door een bijt van een vlooi en komt zo in het lymfen systeem terecht. Eenmaal in dit systeem veroorzaakt het een ontstekingen in de lymfe knopen. De builenpest kan leiden tot de volgende vorm van de pest, longpest. De longpest de meeste virulente vorm de pest, en incubatie kan al voorkomen binnen 24 uur.
+De World Health Organisation spreekt over 2 vormen van een pest infectie. De builenpest, deze infectie is de meest voorkomende infectie soort. *Y. pestis* komt binnen door een bijt van een vlooi en komt zo in het lymfen systeem terecht. Eenmaal in dit systeem veroorzaakt het ontstekingen in de lymfe knopen. De builenpest kan leiden tot de volgende vorm van de pest, longpest. De longpest is de meeste virulente vorm de pest, en incubatie kan al voorkomen binnen 24 uur.
 
-Alhoewel de pest nog steeds een gevaar blijft in verschillende landen is de behandeling ervan goed te doen met veel voorkomende soorten antibiotica. Deze behandling werkt alleen wanneer diagnose vroeg verkregen kan worden.
+Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de behandeling ervan goed te doen met veel voorkomende soorten antibiotica. Deze behandling werkt alleen wanneer diagnose vroeg verkregen kan worden.
 
 \newpage
 
 #Doel
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
-de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
+Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
 \newpage
 
 ## Theorie
