@@ -50,7 +50,7 @@ Als laatste wordt er nog gekeken naar het effect wanneer de mRNA synthese snelhe
 ## Theorie
 Het biologisch model dat gebruikt wordt, is hieronder te zien in figuur 1. In dit model wordt beschreven dat het receptor mRNA (mRNAR) beinvloed wordt door de synthese van het mRNA(ks_Rm) en de degradatie van het mRNA(kd_Rm). R is de vrije glucocorticoide receptor dichtheid in het cytostol, hier beschrijft ks_R de synthese van de glucocorticoide receptor, en kd_R beschrijft de afbraak ervan.
 
-R wordt ook beinvloed door de aanmaak van het glucocorticoide receptor complex (DR) en de hoeveelheid van dit complex in de nucleus (DR(N)). Kon is de vorming van DR, kT zegt iets over het verplaatsen van DR naar de celkern. Een deel van DR(N) wordt weer terug gebracht naar het cytostol kre, maar een deel van kre komt niet meer terug. Rf is de fractie van de vrije receptor die opnieuw gebruikt wordt. IC50_Rm is de concentratie van DR(N) waarbij de aanmaak van het receptor mRNA daalt tot 50% van de basis waarde.
+R wordt ook beinvloed door de aanmaak van het glucocorticoide receptor complex (DR) en de hoeveelheid van dit complex in de nucleus (DR(N)). Kon is de snelheidsconstante voor de vorming van DR, kT zegt iets over het verplaatsen van DR naar de celkern. Een deel van DR(N) wordt weer terug gebracht naar het cytostol kre, maar een deel van kre komt niet meer terug. Rf is de fractie van de vrije receptor die opnieuw gebruikt wordt. IC50_Rm is de concentratie van DR(N) waarbij de aanmaak van het receptor mRNA daalt tot 50% van de basis waarde.
 
 D is de concentratie van MPL in molair.
 
@@ -218,6 +218,8 @@ plot(out, main = c("Receptor mRNA", "Free receptor density", "MPL-comlex",
                    "MPL-complex in the nucleus"),
      ylab = c("fmol/g", "fmol/mg","fmol/mg", "fmol/mg"), xlab = "time(hours)")
 ```
+
+
 
 ```{r, fig.cap="Uitkomsten van het model wanneer de auto-regulatie weggehaald is uit het model. Te zien is dat de concentratie mRNA gelijk daalt en vervolgens stabiel blijft. De dichtheid van de vrije receptor gaat langzaam naar beneden totdat dit ook stabiel ligt. Zowel het MPL-complex in het cytoplasma als het MPL-complex in de kern stijgen eerst sterk totdat ze langzaam aan dalen, vervolgens liggen ze stabiel."}
 # Uitwerking model m.b.v. ode functie:
