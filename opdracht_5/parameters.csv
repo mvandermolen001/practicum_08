@@ -1,0 +1,13 @@
+Naam, geschatte waarde, betekenis
+P, 1 x 10^-4, fractie blootgesteld aan geinfecteerde rat of vlo
+N, 25570895, populatie Madagscar in 2017
+Gamma_b, 0.23,  inverse builenplaag incubatie periode
+Gamma_p, 0.29, inverse longpest incubatie periode
+Delta_b, 0.26, inverse builenpest infectie periode
+Delta_p, 0.34, inverse longpest infectie periode
+Epsilon, 0.03, snelheid waarmee builenpest overgaat naar longpest
+Alpha, 1.9 x 10^-3, snelheid van overdracht van vlo naar mens
+Beta, 2.23, snelheid van overdracht van mens naar mens
+Theta, 0.11, reductie van het effect van de interventie 
+Tau_h, 8.89, de tijd waarin de interventie maatregelen de helft van het maximale effect heeft bereikt op mens-tot-mens
+Tau_f, 17.93, de tijd waarin de interventie maatregelen de helft van het maximale effect heeft bereikt op vlo-tot-mens
