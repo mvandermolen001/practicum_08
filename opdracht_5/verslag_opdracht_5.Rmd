@@ -110,15 +110,81 @@ $$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
 
 
 
+
 # Methode
 
 ## Het software model
+Gebruikt in dit model is R (versie 4.0.4) en de DeSolve library(versie 1.28)\cite{Soertaert10}. Het volgende model wordt
+gebruikt:
+```{r}
+library(deSolve)
+
+PTM <- function(t,state,parms){
+with(as.list(c(state,parms)),{
+  dSb <- -Sb*alpha*firf(t)*fitv_h(t)-beta*Sb*Ip/N*fitv_h(t)
+  dSp <- -beta*Sp*Ip/N*fitv_h(t)
+  dEb <- Sb*alpha*firf(t)*fitv_f(t) - gamma_b * Eb
+  dEp <- beta*(Sb + Sp) * Ip / N *fitv_h(t) - gamma_p * Ep
+  dIb <- gamma_b * Eb - epsilon * Ib - delta_b * Ib
+  dIp <- gamma_p * Ep + epsilon * Ib - delta_p * Ip
+return(list(c(dSb, dSp, dEb, dEp, dIb, dIp)))
+}
+)
+  }
+
+```
 
 
 ## Model configuratie
 
+Omdat het doel het repliceren van het artikel\textit{Kinh} is, is er voor gekozen om dezelfde parameters te gebruiken.
+```{r}
+data.parameters <- read.csv("parameters.csv", header = T)
+pander(data.parameters)
+```
+
+Voor de parameters die verantwoordelijk zijn voor de dichtheid van de geinfecteerde vlo en rat populatie (firf), de waarde waarin de inverventie maatregelen van vlo tot mens wordt uitgedrukt(fitv_f), en de waarde waarin de inverventie maatregelen van mens tot mens wordt uitgedrukt(fitv_h), zijn functies. Deze functies worden als parameters meegegeven en zien er als volgt uit.
+
+```{r}
+func_firf <- function(t){
+  return(1.15 + 0.08 * sin(2*pi/12*t) + 0.1 * cos(2*pi/12*t))
+}
+
+
+func_fitv_h <- function(t){
+  return(1-1/(1+0.11+exp(8.89-t)))
+}
+
+func_fitv_f <- function(t){
+  return(1-1/(1+0.11+exp(17.93-t)))
+}
+```
+
+Voor de initiele waardes is er vanuit gegaan dat maar een klein deel van de populatie vatbaar is voor de pest. Deze fractie mensen wordt aangegeven met de waarde p. Voor een populatie van N is de hoeveelheid vatbare mensen voor de builenpest $pN$. De hoeveelheid mensen die vatbaar zijn voor de longpest is $(1-p)N$.
+
+```{r}
+ini.waardes <- read.csv("ini_waardes.csv", header = T)
+pander(ini.waardes)
+```
+
+```{r}
+time <- c(seq(0, 60, by =1))
+
+state <- c(Sb = 2557.09, Sp = 25568338, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
+
+parameters <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0.03,
+           alpha = 0.0019, beta = 2.23, N = 25570895, delta_p = 0.34, delta_b = 0.26,
+           firf = func_firf, fitv_f = func_fitv_f, fitv_h = func_fitv_h)
+```
+
+\newpage
 
 # Resultaten
+
+```{r}
+out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
+plot(out_1)
+```
 
 
 # Discussie en Conclusie
@@ -128,18 +194,18 @@ $$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
 ## Conclusie 
 
 
-<!-- \begin{thebibliography}{9} -->
+\begin{thebibliography}{9}
 
-<!-- \bibitem{Soertaert10} -->
-<!-- Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010. -->
+\bibitem{Soertaert10}
+Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
 
-<!-- \bibitem{Kinh} -->
-<!-- Kinh Nguyen, V., Parra-Rojas, C., &amp;  Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001  -->
+\bibitem{Kinh}
+Kinh Nguyen, V., Parra-Rojas, C., Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001 
 
-<!-- \bibitem{WHO} -->
-<!-- World Health Organization.:\textit Plague. World Health Organization). https://www.who.int/news-room/fact-sheets/detail/plague#:~:text=Plague%20is%20caused%20by%20the,plague%20infection%3A%20bubonic%20and%20pneumonic.  -->
+\bibitem{WHO}
+World Health Organization.:\textit {Plague. World Health Organization.} https://shorturl.at/dvHNR
 
-<!-- \bibitem{Pander} -->
-<!-- Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander -->
+\bibitem{Pander}
+Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander
 
-<!-- \end{thebibliography} -->
+\end{thebibliography}
