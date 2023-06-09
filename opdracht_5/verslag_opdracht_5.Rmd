@@ -34,7 +34,7 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de beh
 \newpage
 
 #Doel
-<<<<<<< HEAD
+
 Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
 de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
 
@@ -45,10 +45,51 @@ Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{
 
 ## Theorie
 
+
+Plague transmission model (PTM).
+We proposed a plague transmission model 
+using a modified SEIR (Susceptible-Exposed-Infectious-Removed) model 
+with two additional incorporated components reflecting the seasonal infection from infected rat fleas and imperfect sigmoidal effects of public health interventions. 
+
+S, E, I:    Susceptible, Exposed, and Infectious:       Vatbaar, blootgesteld en besmettelijk  
+p, b: longpest (pneumonic), builenpest (bubonic).  
+N: populatie grootte  
+Sb = pN: Het deel van de populatie dat in contact komt met de ratten vlooien met de bubonic variant (builenpest..)  
+Sp = (1-p)N: Het deel van de populatie dat in contact komt met de ratten vlooien met de pneumonic variant (longpest)
+firf: Infected rat fleas. Vlo dichtheid. Berekend met de volgende sinusoide functie: $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$  gebasseerd op de temperatuur op madagascar.  
+fitv, h: intervention. Dit zijn de stippellijnen. De plaatsen waar mensen het model kunnen beinvloeden. Berekend met de volgende functie: $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
+
+
+Alpha ($\alpha$): De snelheid waarmee de ziekte van vlo op mens wordt overgebracht. 
+Beta ($\beta$): De snelheid waarmee de pest van mens op mens wordt overgebracht. 
+Delta ($\delta$): de mensen die besmettelijk waren, die weer beter worden of sterven, waardoor de hoeveelheid besmettelijke mensen afneemt.
+Epsilon ($\epsilon$): Hoeveelheid geinfecteerde mensen met de builenpest, die overgaat in de longpest variant. 
+Gamma ($\gamma$): Hoeveelheid blootgestelde mensen (E) aan de ziekte, die er ziek van worden, waardoor ze besmettelijk (I) worden. 
+
+
+Bij dit onderzoek wordt het "Plague transmission model (PTM)" gebruikt. Dit model maakt gebruik van het SEIR (Susceptible-Exposed-Infectious-Removed (Vatbaar-blootgesteld-besmettelijk-hersteld)) model. 
+
+
+
+
+
+- Describe biological model
+- Picture of the biological model
+
+```{r, echo=FALSE, out.width='95%'}
+#knitr::include_graphics('example.png')
+```
+Give an explanation of the model with citations of source \cite{Soertaert10} (replace this with actual source)
+and formula explanation
+
+$$\frac{\delta R}{\delta t} = -r * R + m $$
+Describe each element and the transformations
+
+
 ### Het model
 Met de kennis die ervan de pest is, is het volgende model opgesteld.
 
-```{r, echo=FALSE, out.width='95%', fig.cap=""Flowchart van het PTM\cite{Kinh}. Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
+```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
 knitr::include_graphics('plague_model.jpg')
 ```
 
@@ -87,18 +128,18 @@ $$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
 ## Conclusie 
 
 
-\begin{thebibliography}{9}
+<!-- \begin{thebibliography}{9} -->
 
-\bibitem{Soertaert10}
-Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
+<!-- \bibitem{Soertaert10} -->
+<!-- Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010. -->
 
-\bibitem{Kinh}
-Kinh Nguyen, V., Parra-Rojas, C., &amp;  Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001 
+<!-- \bibitem{Kinh} -->
+<!-- Kinh Nguyen, V., Parra-Rojas, C., &amp;  Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001  -->
 
-\bibitem{WHO}
-World Health Organization.:\textit Plague. World Health Organization). https://www.who.int/news-room/fact-sheets/detail/plague#:~:text=Plague%20is%20caused%20by%20the,plague%20infection%3A%20bubonic%20and%20pneumonic. 
+<!-- \bibitem{WHO} -->
+<!-- World Health Organization.:\textit Plague. World Health Organization). https://www.who.int/news-room/fact-sheets/detail/plague#:~:text=Plague%20is%20caused%20by%20the,plague%20infection%3A%20bubonic%20and%20pneumonic.  -->
 
-\bibitem{Pander}
-Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander
+<!-- \bibitem{Pander} -->
+<!-- Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander -->
 
-\end{thebibliography}
+<!-- \end{thebibliography} -->
