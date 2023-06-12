@@ -46,32 +46,9 @@ Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{
 
 ## Theorie
 
-
-Plague transmission model (PTM).
-We proposed a plague transmission model 
-using a modified SEIR (Susceptible-Exposed-Infectious-Removed) model 
-with two additional incorporated components reflecting the seasonal infection from infected rat fleas and imperfect sigmoidal effects of public health interventions. 
-
-S, E, I:    Susceptible, Exposed, and Infectious:       Vatbaar, blootgesteld en besmettelijk  
-p, b: longpest (pneumonic), builenpest (bubonic).  
-N: populatie grootte  
-Sb = pN: Het deel van de populatie dat in contact komt met de ratten vlooien met de bubonic variant (builenpest..)  
-Sp = (1-p)N: Het deel van de populatie dat in contact komt met de ratten vlooien met de pneumonic variant (longpest)
-firf: Infected rat fleas. Vlo dichtheid. Berekend met de volgende sinusoide functie: $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$  gebasseerd op de temperatuur op madagascar.  
-fitv, h: intervention. Dit zijn de stippellijnen. De plaatsen waar mensen het model kunnen beinvloeden. Berekend met de volgende functie: $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
-
-
-Alpha ($\alpha$): De snelheid waarmee de ziekte van vlo op mens wordt overgebracht. 
-Beta ($\beta$): De snelheid waarmee de pest van mens op mens wordt overgebracht. 
-Delta ($\delta$): de mensen die besmettelijk waren, die weer beter worden of sterven, waardoor de hoeveelheid besmettelijke mensen afneemt.
-Epsilon ($\epsilon$): Snelheid waarmee de builenpest bij geinfecteerde mensen overgaat in de longpest variant van de ziekte. 
-Gamma ($\gamma$): Hoeveelheid blootgestelde mensen (E) aan de ziekte, die er ziek van worden, waardoor ze besmettelijk (I) worden. 
-
-
-
-
-
 Bij dit onderzoek wordt het "Plague transmission model (PTM)" gebruikt. Dit model maakt gebruik van het SEIR (Susceptible-Exposed-Infectious-Removed (Vatbaar-blootgesteld-besmettelijk-hersteld)) model. Er wordt voor de S, E en I verandering per variant van de pest, longpest (p (pneumonic)) of builenpest (b (bubonic)), een differentiaal vergelijking opgesteld. Daarnaast wordt de verandering van hoeveel besmette vlooien (firf) in acht genomen en berekend door $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$ gebasseerd op de temperatuur op madagascar. En het effect dat mensen hebben op het bestrijden van de pest op verschillende plaatsen (fitv), berekend door $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
+
+### Het model
 
 Hieronder is een schematische weergave van het model gegeven die de verhouding hiertussen laat zien.
 ```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
@@ -90,32 +67,19 @@ Met behulp van deze parameters kunnen de volgende differentiaal vergelijkingen o
 Hiermee worden de veranderingen in de hoeveelheid van de populatie die vatbaar zijn voor de longpest (Sp), vatbaar voor de builenpest (Sb), blootgesteld aan de longpest (Ep), blootgesteld aan de builenpest (Eb), geïnfecteerd door de longpest (Ip) en geïnfecteerd door de builenpest (Ib) bepaald.
 
 
-
-
-
-
-
-### Het model
-Met de kennis die ervan de pest is, is het volgende model opgesteld.
-
-```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
-knitr::include_graphics('plague_model.jpg')
-```
-
-
 ### De formules
-Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt:
-$$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm} + DR(N)}) - k_{d\_Rm} * mRNA_R$$
 
+$$\frac{dS_b}{dt} = S_b \alpha f_{irf}f_{itv,f} - \beta S_b \frac{I_p}{N}f_{itv,h}$$
 
-De concentratie vrije receptor(R) is als volgt af te leiden:
-$$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
+$$\frac{dS_p}{dt} = -\beta S_p \frac{I_p}{N}f_{itv,h}$$
 
-De concentratie receptor complex(DR) is als volgt af te leiden:
-$$\frac{dDR}{dt} = k_{on} * D *R - k_t * DR$$
+$$\frac{dE_b}{dt} = S_b \alpha f_{irf}f_{itv,f} - \gamma_b E_b$$
 
-De concentratie receptor complex(DR(N)) in de kern is als volgt af te leiden:
-$$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
+$$\frac{dE_p}{dt} = \beta(S_b + S_p) \frac{I_p}{N}f_{itv,h} - \gamma_pE_p$$
+
+$$\frac{dI_b}{dt}=\gamma_b E_b - \epsilon I_b - \delta_bI_b$$
+
+$$\frac{dI_p}{dt}=\gamma_p E_p + \epsilon I_b - \delta_pI_p$$
 
 
 
@@ -176,25 +140,45 @@ ini.waardes <- read.csv("ini_waardes.csv", header = T)
 pander(ini.waardes)
 ```
 
+Uiteindelijk komt het model met de volgende waardes uit. De state zijn de initiele waardes, en de parameters zijn nu ingevuld. Voor de tijd wordt er per dag gekeken. Er is voor 60 dagen gekozen omdat de uitbraak ongeveer 3 maanden duurde.
+
 ```{r}
 time <- c(seq(0, 60, by =1))
 
-state <- c(Sb = 2557.09, Sp = 25568338, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
+state <- c(Sb = 2557, Sp = 25568338, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
 
 parameters <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0.03,
            alpha = 0.0019, beta = 2.23, N = 25570895, delta_p = 0.34, delta_b = 0.26,
            firf = func_firf, fitv_f = func_fitv_f, fitv_h = func_fitv_h)
 ```
 
+Met data uit het artikel zal het model gevalideerd worden. Deze data komt uit het figuur gepubliceerd door de World Health Organisation\cite{WHO_report}. Dit is alleen de data van de geinfecteerde mensen, en in deze data wordt er onderscheidt gemaakt tussen de variant builenpest en longpest.
+
+```{r}
+plague.cases <- read.csv("plague_data.csv", header = T, sep = "\t")
+```
+
+
 \newpage
+
 
 # Resultaten
 
-```{r}
+## Valideren model
+
+```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling. Het model bereikt geen 0 waarde maar de data punten wel."}
 out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
-plot(out_1)
+plot(out_1[,c("Ib")], type = "l", ylim = c(0, 20), xlab = "Dagen van 22/08/2017",
+     ylab = "Pest infecties", main = "Builenpest")
+points(plague.cases$bubonic[53:118], pch = 20, col = "red")
 ```
 
+
+```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling. De data komt mooi door het model heen, alleen is de piek van het model hoger dan de piek in de data punten."}
+plot(out_1[,c("Ip")], type = "l", ylim = c(0, 80), xlab = "Dagen van 22/08/2017", 
+     ylab = "Pest infecties", main = "Longpest")
+points(plague.cases$pneumonic[53:118], pch = 20, col = "red")
+```
 
 # Discussie en Conclusie
 ## Discussie
@@ -216,5 +200,8 @@ World Health Organization.:\textit {Plague. World Health Organization.} https://
 
 \bibitem{Pander}
 Daróczi G, Tsegelskyi R (2022).: \textit {pander:  An R ’Pandoc’ Writer. R package version 0.6.5},https://CRAN.R-project.org/package=pander
+
+\bibitem{WHO_report}
+World Health Organization.: \textit {Plague Outbreak Situation Reports.}, https://apps.who.int/iris/bitstream/handle/10665/259482/Ex-PlagueMadagascar20112017.pdf
 
 \end{thebibliography}
