@@ -46,33 +46,9 @@ Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{
 
 ## Theorie
 
-
-Plague transmission model (PTM).
-We proposed a plague transmission model 
-using a modified SEIR (Susceptible-Exposed-Infectious-Removed) model 
-with two additional incorporated components reflecting the seasonal infection from infected rat fleas and imperfect sigmoidal effects of public health interventions. 
-
-S, E, I:    Susceptible, Exposed, and Infectious:       Vatbaar, blootgesteld en besmettelijk  
-p, b: longpest (pneumonic), builenpest (bubonic).  
-N: populatie grootte  
-Sb = pN: Het deel van de populatie dat in contact komt met de ratten vlooien met de bubonic variant (builenpest..)  
-Sp = (1-p)N: Het deel van de populatie dat in contact komt met de ratten vlooien met de pneumonic variant (longpest)
-firf: Infected rat fleas. Vlo dichtheid. Berekend met de volgende sinusoide functie: $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$  gebasseerd op de temperatuur op madagascar.  
-fitv, h: intervention. Dit zijn de stippellijnen. De plaatsen waar mensen het model kunnen beinvloeden. Berekend met de volgende functie: $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
-
-
-Alpha ($\alpha$): De snelheid waarmee de ziekte van vlo op mens wordt overgebracht. 
-Beta ($\beta$): De snelheid waarmee de pest van mens op mens wordt overgebracht. 
-Delta ($\delta$): de mensen die besmettelijk waren, die weer beter worden of sterven, waardoor de hoeveelheid besmettelijke mensen afneemt.
-Epsilon ($\epsilon$): Snelheid waarmee de builenpest bij geinfecteerde mensen overgaat in de longpest variant van de ziekte. 
-Gamma ($\gamma$): Hoeveelheid blootgestelde mensen (E) aan de ziekte, die er ziek van worden, waardoor ze besmettelijk (I) worden. 
-
-
-
-
-
 Bij dit onderzoek wordt het "Plague transmission model (PTM)" gebruikt. Dit model maakt gebruik van het SEIR (Susceptible-Exposed-Infectious-Removed (Vatbaar-blootgesteld-besmettelijk-hersteld)) model. Er wordt voor de S, E en I verandering per variant van de pest, longpest (p (pneumonic)) of builenpest (b (bubonic)), een differentiaal vergelijking opgesteld. Daarnaast wordt de verandering van hoeveel besmette vlooien (firf) in acht genomen en berekend door $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$ gebasseerd op de temperatuur op madagascar. En het effect dat mensen hebben op het bestrijden van de pest op verschillende plaatsen (fitv), berekend door $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
 
+### Het model
 Hieronder is een schematische weergave van het model gegeven die de verhouding hiertussen laat zien.
 ```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
 knitr::include_graphics('plague_model.jpg')
@@ -83,40 +59,12 @@ De totale populatie grootte wordt in N uitgedrukt. Hiervan is Sb het deel van de
 
 Daarnaast zijn er nog een aantal parameters die snelheden van overdracht van de ziektes weergeven. Alpha ($\alpha$) i de snelheid waarmee de ziekte van vlo op mens wordt overgebracht. Beta ($\beta$) is de snelheid waarmee de pest van mens op mens wordt overgebracht. Delta ($\delta$) is de snelheid waarmee het aantal besmettelijke mensen weer afneemt, doordat ze beter worden of sterven. Epsilon ($\epsilon$) is de snelheid waarmee de builenpest bij geinfecteerde mensen overgaat in de longpest variant van de ziekte. Gamma ($\gamma$) is de hoeveelheid blootgestelde mensen (E) aan de ziekte, die er ziek van worden, waardoor ze besmettelijk (I) worden. 
 
+### De formules
 Met behulp van deze parameters kunnen de volgende differentiaal vergelijkingen opgesteld worden:
 
 .....
 
 Hiermee worden de veranderingen in de hoeveelheid van de populatie die vatbaar zijn voor de longpest (Sp), vatbaar voor de builenpest (Sb), blootgesteld aan de longpest (Ep), blootgesteld aan de builenpest (Eb), geïnfecteerd door de longpest (Ip) en geïnfecteerd door de builenpest (Ib) bepaald.
-
-
-
-
-
-
-
-### Het model
-Met de kennis die ervan de pest is, is het volgende model opgesteld.
-
-```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
-knitr::include_graphics('plague_model.jpg')
-```
-
-
-### De formules
-Uit dit model is af te leiden dat de concentratie voor receptor mRNA zo te berekenen valt:
-$$\frac{dmRNA_R}{dt} = k_{s\_Rm} *(1-\frac{DR(N)}{IC_{50\_Rm} + DR(N)}) - k_{d\_Rm} * mRNA_R$$
-
-
-De concentratie vrije receptor(R) is als volgt af te leiden:
-$$\frac{dR}{dt} = k_{s\_R} * mRNA_R + R_f * k_{re} * DR(N) - k_{on} * D * R - k_{d\_R}  * R$$
-
-De concentratie receptor complex(DR) is als volgt af te leiden:
-$$\frac{dDR}{dt} = k_{on} * D *R - k_t * DR$$
-
-De concentratie receptor complex(DR(N)) in de kern is als volgt af te leiden:
-$$\frac{dDR(N)}{dt} = k_t * DR - k_{re} * DR(N)$$
-
 
 
 
