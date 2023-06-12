@@ -1,5 +1,6 @@
 ---
 title: 'Valideren en simulatie van glucocorticosteroide model'
+  Plague transmission model?
 author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
 output:
@@ -89,7 +90,7 @@ Describe each element and the transformations
 ### Het model
 Met de kennis die ervan de pest is, is het volgende model opgesteld.
 
-```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
+```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
 knitr::include_graphics('plague_model.jpg')
 ```
 
