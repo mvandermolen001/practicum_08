@@ -1,5 +1,5 @@
 ---
-title: 'Valideren en simulatie van glucocorticosteroide model'
+title: 'Valideren en simulaties van Plague Transition model'
   Plague transmission model?
 author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
@@ -165,8 +165,8 @@ out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
 
 plot(out_1[,c("Ib")], type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
      ylab = "Pest infecties", main = "Builenpest")
-
 points(plague_cases$bubonic[53:118], pch = 20, col = "red")
+
 
 legend("topright", legend=c("Model", "Data builenpest"),
        col=c("black", "red"), lty=c(1, NA), cex=0.8, pch = c(NA, 20))
@@ -198,10 +198,13 @@ plot(perfect_intervention, out_1, type = "l", main = c("Vatbaar Builenpest", "Va
      xlab = "Tijd in dagen")
 ```
 
+
 De perfecte interventie op de groep vatbaren is te verklaren met het feit dat mensen die ziek zijn, niet vatbaar zijn. Wanneer er bij interventie minder zieke zijn, betekent dit dat mensen vatbaar blijven.
 
 # Discussie en Conclusie
+
 ## Discussie
+
 Bij de simulatie 'perfecte interventie' werd er gekeken naar wat er zou gebeuren ales er een perfecte interventie was tegenover de inperfecte interventie die daadwerkelijk gebeurde. Zoals verwacht blijven meer mensen langer vatbaar omdat deze niet blootgesteld of geinfecteerd waren. Blootgesteld en geinfecteerden met de builenpest zag een minder snel effect van de interventie omdat er hier een nadruk ligt op het voorkomen dat vlooien bij mensen komen\cite{Carnell22}, deze soort interventie duurt langer totdat het effect heeft. Dit terwijl longpest, hoewel het sneller verspreid, ook makkelijker te beinvloeden is aan de hand van maatregelen. 
 
 ## Conclusie 
