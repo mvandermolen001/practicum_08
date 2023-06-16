@@ -1,5 +1,5 @@
 ---
-title: 'Valideren en simulatie van glucocorticosteroide model'
+title: 'Valideren en simulaties van Plague Transition model'
   Plague transmission model?
 author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
@@ -24,7 +24,7 @@ library(pander)
 
 
 # Introductie
-Als er gepraat wordt over de pest, wordt al snel gedacht aan de middeleeuwen. Toch is de pest in de huidige eeuw nog steeds een gevaar. Dit was te zien aan een uitbraak van de pest in Madagascar in 2017. Deze uitbraak heerste van augustus tot november\cite{Kinh}. Tijdens deze uitbraak waren er 2417 gevallen van de pest, en 209 mensen kwamen om het leven door de pest. Het risico op nog een uitbraak bestaat nog altijd en omwille van betere preventie, is het belangrijk dat er gekeken wordt naar hoe de pest zich verspreidt en in welke vormen de ziekte voorkomt onder mensen. 
+Als er gepraat wordt over de pest, wordt al snel gedacht aan de middeleeuwen. Toch is de pest in de huidige eeuw nog steeds een gevaar. Dit was te zien aan een uitbraak van de pest in Madagascar in 2017. Deze uitbraak heerste van augustus tot november\cite{Kinh18}. Tijdens deze uitbraak waren er 2417 gevallen van de pest, en 209 mensen kwamen om het leven door de pest. Het risico op nog een uitbraak bestaat nog altijd en omwille van betere preventie, is het belangrijk dat er gekeken wordt naar hoe de pest zich verspreidt en in welke vormen de ziekte voorkomt onder mensen. 
 
 De pest wordt veroorzaakt door de bacterie *Yersinia pestis*, deze bacterie mag zich graag vestigen op kleine zoogdieren maar ook vlooien\cite{WHO}. Deze bacterie komt in mensen terecht door een bijt van een geinfecteerde vlooi, onbeschermd contact met geinfecteerd materiaal, of het inademen van kleine deeltjes die afkomstig zijn van een patient met longpest. 
 
@@ -36,11 +36,8 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de beh
 
 #Doel
 
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
+Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh18} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
 de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
-
-
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
 
 \newpage
 
@@ -81,8 +78,26 @@ Hiermee worden de veranderingen in de hoeveelheid van de populatie die vatbaar z
 # Methode
 
 ## Het software model
-Gebruikt in dit model is R (versie 4.0.4) en de DeSolve library(versie 1.28)\cite{Soertaert10}. Het volgende model wordt
-gebruikt:
+Gebruikt in dit model is R (versie 4.0.4) en de DeSolve library(versie 1.28)\cite{Soertaert10}.
+
+Voor de parameters die verantwoordelijk zijn voor de dichtheid van de geinfecteerde vlo en rat populatie (firf), de waarde waarin de inverventie maatregelen van vlo tot mens wordt uitgedrukt(fitv_f), en de waarde waarin de inverventie maatregelen van mens tot mens wordt uitgedrukt(fitv_h), zijn functies. Deze functies worden als parameters meegegeven en zien er als volgt uit.
+
+```{r}
+func_firf <- function(t){
+  return(1.15 + 0.08 * sin(2*pi/12*t) + 0.1 * cos(2*pi/12*t))
+}
+
+
+func_fitv_h <- function(t){
+  return(1-1/(1+0.11+exp(8.89-t)))
+}
+
+func_fitv_f <- function(t){
+  return(1-1/(1+0.11+exp(17.93-t)))
+}
+```
+
+Het volgende model wordt gebruikt:
 ```{r}
 library(deSolve)
 
@@ -119,26 +134,10 @@ PTM_geen_int <- function(t,state,parms){
 
 ## Model configuratie
 
-Omdat het doel het repliceren van het artikel\cite{Kinh} is, is er voor gekozen om dezelfde parameters te gebruiken.
+Omdat het doel het repliceren van het artikel\cite{Kinh18} is, is er voor gekozen om dezelfde parameters te gebruiken.
 ```{r}
 data.parameters <- read.csv("parameters.csv", header = T)
 pander(data.parameters)
-```
-
-Voor de parameters die verantwoordelijk zijn voor de dichtheid van de geinfecteerde vlo en rat populatie (firf), de waarde waarin de inverventie maatregelen van vlo tot mens wordt uitgedrukt (fitv_f), en de waarde waarin de inverventie maatregelen van mens tot mens wordt uitgedrukt (fitv_h), zijn functies. Deze functies worden als parameters meegegeven en zien er als volgt uit.
-
-```{r}
-func_firf <- function(t){
-  return(1.15 + 0.08 * sin(2 * pi / 12 * t) + 0.1 * cos(2 * pi / 12 * t))
-}
-
-func_fitv_h <- function(t){
-  return(1 - 1/(1 + 0.11 + exp(8.89 - t)))
-}
-
-func_fitv_f <- function(t){
-  return(1 - 1 / (1 + 0.11 + exp(17.93 - t)))
-}
 ```
 
 
@@ -166,7 +165,7 @@ parameters <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0.03,
 Met data uit het artikel zal het model gevalideerd worden. Deze data komt uit het figuur gepubliceerd door de World Health Organisation\cite{WHO_report}. Dit is alleen de data van de geinfecteerde mensen, en in deze data wordt er onderscheidt gemaakt tussen de variant builenpest en longpest.
 
 ```{r}
-plague.cases <- read.csv("plague_data.csv", header = T, sep = "\t")
+plague_cases <- read.csv("plague_data.csv", header = T, sep = "\t")
 ```
 
 Veranderde beginwaarden bij de verhoogde populatie in 2023.
@@ -183,35 +182,80 @@ state_2023 <- c(Sb = 3033, Sp = 30322699, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
 
 ## Valideren model
 
+Hieronder is te zien hoe het model verloopt vergeleken met het verloop aan de hand van de verkregen data punten.
+
+### Builenpest:
+```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling."}
+out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
+
+plot(out_1[,c("Ib")], type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
+     ylab = "Pest infecties", main = "Builenpest")
+points(plague_cases$bubonic[53:118], pch = 20, col = "red")
+
+legend("topright", legend=c("Model", "Data builenpest"),
+       col=c("black", "red"), lty=c(1, NA), cex=0.8, pch = c(NA, 20))
+```
+
+In figuur 2 is te zien dat alhoewel het model in het begin en op het eind goed verloopt, de piek niet helemaal goed op de datapunten zit. Het model heeft duidelijk een hogere piek, terwijl de data punten wat lager zitten. De piek lijkt wel op het goede moment te zitten.
+
+
 ```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling. Het model bereikt geen 0 waarde maar de data punten wel."}
 out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
-plot(out_1[,c("Ib")], type = "l", ylim = c(0, 20), xlab = "Dagen van 22/08/2017",
+plot(out_1[,c("Ib")]*0.7, type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
      ylab = "Pest infecties", main = "Builenpest")
 points(plague.cases$bubonic[53:118], pch = 20, col = "red")
 ```
 
 
-```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling. Het model bereikt geen 0 waarde maar de data punten wel."}
-out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
-plot(out_1[,c("Ib")]*0.7, type = "l", ylim = c(0, 20), xlab = "Dagen van 22/08/2017",
-     ylab = "Pest infecties", main = "Builenpest")
-points(plague.cases$bubonic[53:118], pch = 20, col = "red")
+
+### Longpest:
+```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling."}
+plot(out_1[,c("Ip")], type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/2017", 
+
+     ylab = "Pest infecties", main = "Longpest")
+points(plague_cases$pneumonic[53:118], pch = 20, col = "red")
+
+legend("topright", legend=c("Model", "Data longpest"),
+       col=c("black", "red"), lty=c(1, NA), cex=0.8, pch = c(NA, 20))
 ```
 
-
-
 ```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling. De data komt mooi door het model heen, alleen is de piek van het model hoger dan de piek in de data punten."}
-plot(out_1[,c("Ip")], type = "l", ylim = c(0, 80), xlab = "Dagen van 22/08/2017", 
+plot(out_1[,c("Ip")]*0.90, type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/2017", 
      ylab = "Pest infecties", main = "Longpest")
 points(plague.cases$pneumonic[53:118], pch = 20, col = "red")
 ```
-```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling. De data komt mooi door het model heen, alleen is de piek van het model hoger dan de piek in de data punten."}
-plot(out_1[,c("Ip")]*0.90, type = "l", ylim = c(0, 80), xlab = "Dagen van 22/08/2017", 
-     ylab = "Pest infecties", main = "Longpest")
-points(plague.cases$pneumonic[53:118], pch = 20, col = "red")
-```
-## Gestegen populatie
 
+
+## Simulaties van het model 
+
+### Perfecte interventies
+Deze simulatie laat zien wat er gebeurt als de interventie perfect is, maar de tijd waarmee de interventie het maximum effect heeft hetzelfde blijft.
+
+```{r, fig.cap="In het figuur is het gevolg van een perfecte interventie te zien (zwarte lijn) vergeleken met de orginele response(rode lijn). Bij de perfecte interventie op de groep van de vatbare is er te zien dat het eerst geleidelijk loopt met de orginele lijn, tot rond dag 20 waar het recht trekt. Bij de blootgestelde groep en de groep van geinfecteerde is er te zien dat het ook geleidelijk loopt, alleen de perfecte interventie lijn ziet een minder langere periode van uitbraak."}
+perfect_intervention <- ode(parms = parameters_perfect_intervention, 
+                            time = time, y = state, func = PTM)
+
+plot(perfect_intervention, out_1, type = "l", main = c("Vatbaar Builenpest", "Vatbaar Longpest", 
+                                                       "Blootgesteld Builenpest", "Blootgesteld longpest",
+                                                       "Geinfecteerden Builenpest", "Geinfecteerden Longpest"),
+     xlab = "Tijd in dagen")
+```
+
+
+De perfecte interventie op de groep vatbaren is te verklaren met het feit dat mensen die ziek zijn, niet vatbaar zijn. Wanneer er bij interventie minder zieke zijn, betekent dit dat mensen vatbaar blijven.
+
+### Geen interventies
+Hieronder wordt weergegeven wat het effect van de interventies die door de mens bij deze uitbraak zijn toegepast, heeft gehad op de vordering van de ziekte. In welke mate ze effect hebben gehad. De functie fitv,h,f is uit het model gehaald. 
+
+```{r}
+out_int <- ode(parms = parameters_int, time = time, y = state, func = PTM)
+out_geen_int <- ode(parms = parameters_int, time = time, y = state, func = PTM_geen_int)
+plot(out_int, out_geen_int)
+legend('topright', c('int', 'geen int'), fill=c('black', 'red'))
+```
+
+
+### Gestegen populatie
 Sinds deze pest uitbraak in 2017, is de populatie gestegen. Hieronder zal het effect van een stijging in populatie op het vorderen van de infectie volgens het model weergegeven worden. De huidige poputatie (juni 2023) in Madagascar, 30.325.732 \cite{AlleCijfers}, zal gebruikt worden. N en de beginwaarden Sb, berekend door $pN$ en Sp, berekend door $(1-p)N$ worden hieraan aangepast.
 
 ```{r}
@@ -240,22 +284,15 @@ Bij een vermenigvuldiging van de berekennde longpest infectie gevallen met 0.47,
 
 
 
-## Geen interventies door de mens
-Hieronder wordt weergegeven wat het effect van de interventies die door de mens bij deze uitbraak zijn toegepast, heeft gehad op de vordering van de ziekte. In welke mate ze effect hebben gehad. De functie fitv,h,f is uit het model gehaald. 
-
-```{r}
-out_int <- ode(parms = parameters_int, time = time, y = state, func = PTM)
-out_geen_int <- ode(parms = parameters_int, time = time, y = state, func = PTM_geen_int)
-plot(out_int, out_geen_int)
-legend('topright', c('int', 'geen int'), fill=c('black', 'red'))
-```
-
-
 # Discussie en Conclusie
+
 ## Discussie
 Het is niet gelukt om het onderzoek goed na te bootsen. Je krijgt niet exact dezelfde resultaten als in het artikel afgebeeld wordt. Het model loopt niet goed door de punten heen zoals in het artikel wel te zien is. 
 Bij het model die de infectiegevallen van de builenpest laat zien, lijkt er ongeveer een 30% verhoging te zijn, dan de resultaten in het artikel. Bij een verschuiving van het model 30% lager (*0.7), lijkt het model wel goed door de punten heen te lopen, zoals in het artikel ook zichtbaar is. 
 Bij het model die de infectiegevallen van de longpest laat zien, is er meer aan de hand. De top van de grafiek lijkt ongeveer 10% te hoog te zijn, maar een verschuiving van 10% omlaag (*0.9), loopt de lijn na de top, nog steeds niet exact door de punten heen zoals in het artikel wordt weer gegeven. De lijn lijkt niet snel genoeg te dalen. 
+
+
+Bij de simulatie 'perfecte interventie' werd er gekeken naar wat er zou gebeuren ales er een perfecte interventie was tegenover de inperfecte interventie die daadwerkelijk gebeurde. Zoals verwacht blijven meer mensen langer vatbaar omdat deze niet blootgesteld of geinfecteerd waren. Blootgesteld en geinfecteerden met de builenpest zag een minder snel effect van de interventie omdat er hier een nadruk ligt op het voorkomen dat vlooien bij mensen komen\cite{Carnell22}, deze soort interventie duurt langer totdat het effect heeft. Dit terwijl longpest, hoewel het sneller verspreid, ook makkelijker te beinvloeden is aan de hand van maatregelen. 
 
 ## Conclusie 
 
@@ -265,7 +302,7 @@ Bij het model die de infectiegevallen van de longpest laat zien, is er meer aan 
 \bibitem{Soertaert10}
 Soetaert, K., Petzoldt, T., and Woodrow Setzer, R.: \textit{Solving differential equations in R: package deSolve}, J. Stat. Softw., 33, 1-25, 2010.
 
-\bibitem{Kinh}
+\bibitem{Kinh18}
 Kinh Nguyen, V., Parra-Rojas, C., Hernandez-Varga, E. A. (2018, June 2).:\textit {The 2017 plague outbreak in Madagascar: Data descriptions and epidemic modelling.} ScienceDirect. https://doi.org/10.1016/j.epidem.2018.05.001 
 
 \bibitem{WHO}
@@ -279,5 +316,9 @@ World Health Organization.: \textit {Plague Outbreak Situation Reports.}, https:
 
 \bibitem{AlleCijfers}
 van Bijsterveld W.:\textit {Madagascar in cijfers en grafieken} AlleCijfers. https://allecijfers.nl/land/madagascar/
+
+\bibitem{Carnell22}
+Carnell, H. (2022).:{Historical and modern responses to plague epidemics.} Journal of Humanitarian Affairs, 4(2), 3–11. https://doi.org/10.7227/jha.085 
+
 
 \end{thebibliography}
