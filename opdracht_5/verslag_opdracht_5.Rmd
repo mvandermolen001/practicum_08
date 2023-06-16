@@ -39,9 +39,6 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de beh
 Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
 de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
 
-
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
-
 \newpage
 
 ## Theorie
@@ -81,8 +78,26 @@ Hiermee worden de veranderingen in de hoeveelheid van de populatie die vatbaar z
 # Methode
 
 ## Het software model
-Gebruikt in dit model is R (versie 4.0.4) en de DeSolve library(versie 1.28)\cite{Soertaert10}. Het volgende model wordt
-gebruikt:
+Gebruikt in dit model is R (versie 4.0.4) en de DeSolve library(versie 1.28)\cite{Soertaert10}.
+
+Voor de parameters die verantwoordelijk zijn voor de dichtheid van de geinfecteerde vlo en rat populatie (firf), de waarde waarin de inverventie maatregelen van vlo tot mens wordt uitgedrukt(fitv_f), en de waarde waarin de inverventie maatregelen van mens tot mens wordt uitgedrukt(fitv_h), zijn functies. Deze functies worden als parameters meegegeven en zien er als volgt uit.
+
+```{r}
+func_firf <- function(t){
+  return(1.15 + 0.08 * sin(2*pi/12*t) + 0.1 * cos(2*pi/12*t))
+}
+
+
+func_fitv_h <- function(t){
+  return(1-1/(1+0.11+exp(8.89-t)))
+}
+
+func_fitv_f <- function(t){
+  return(1-1/(1+0.11+exp(17.93-t)))
+}
+```
+
+Het volgende model wordt gebruikt:
 ```{r}
 library(deSolve)
 
@@ -108,23 +123,6 @@ Omdat het doel het repliceren van het artikel\textit{Kinh} is, is er voor gekoze
 ```{r}
 data.parameters <- read.csv("parameters.csv", header = T)
 pander(data.parameters)
-```
-
-Voor de parameters die verantwoordelijk zijn voor de dichtheid van de geinfecteerde vlo en rat populatie (firf), de waarde waarin de inverventie maatregelen van vlo tot mens wordt uitgedrukt(fitv_f), en de waarde waarin de inverventie maatregelen van mens tot mens wordt uitgedrukt(fitv_h), zijn functies. Deze functies worden als parameters meegegeven en zien er als volgt uit.
-
-```{r}
-func_firf <- function(t){
-  return(1.15 + 0.08 * sin(2*pi/12*t) + 0.1 * cos(2*pi/12*t))
-}
-
-
-func_fitv_h <- function(t){
-  return(1-1/(1+0.11+exp(8.89-t)))
-}
-
-func_fitv_f <- function(t){
-  return(1-1/(1+0.11+exp(17.93-t)))
-}
 ```
 
 Voor de initiele waardes is er vanuit gegaan dat maar een klein deel van de populatie vatbaar is voor de pest. Deze fractie mensen wordt aangegeven met de waarde p. Voor een populatie van N is de hoeveelheid vatbare mensen voor de builenpest $pN$. De hoeveelheid mensen die vatbaar zijn voor de longpest is $(1-p)N$.
