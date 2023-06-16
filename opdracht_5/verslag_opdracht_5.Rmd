@@ -88,12 +88,12 @@ func_firf <- function(t){
 }
 
 
-func_fitv_h <- function(t){
-  return(1-1/(1+0.11+exp(8.89-t)))
+func_fitv_h <- function(t, theta,tau_h){
+  return(1-1/(1+theta+exp(tau_h-t)))
 }
 
-func_fitv_f <- function(t){
-  return(1-1/(1+0.11+exp(17.93-t)))
+func_fitv_f <- function(t, theta,tau_f){
+  return(1-1/(1+theta+exp(tau_f-t)))
 }
 ```
 
@@ -102,17 +102,17 @@ Het volgende model wordt gebruikt:
 library(deSolve)
 
 PTM <- function(t,state,parms){
-  with(as.list(c(state,parms)),{
-    dSb <- - Sb * alpha * firf(t) * fitv_f(t) - beta * Sb * Ip / N * fitv_h(t)
-    dSp <- - beta * Sp * Ip/N * fitv_h(t)
-    dEb <- Sb * alpha * firf(t) * fitv_f(t) - gamma_b * Eb
-    dEp <- beta * (Sb + Sp) * Ip / N * fitv_h(t) - gamma_p * Ep
-    dIb <- gamma_b * Eb - epsilon * Ib - delta_b * Ib
-    dIp <- gamma_p * Ep + epsilon * Ib - delta_p * Ip
-    return(list(c(dSb, dSp, dEb, dEp, dIb, dIp)))
-  }
-  )
+with(as.list(c(state,parms)),{
+  dSb <- -Sb*alpha*firf(t)*fitv_f(t, theta, tau_f)-beta*Sb*Ip/N*fitv_h(t, theta, tau_h)
+  dSp <- -beta*Sp*Ip/N*fitv_h(t, theta, tau_h)
+  dEb <- Sb*alpha*firf(t)*fitv_f(t, theta, tau_f) - gamma_b * Eb
+  dEp <- beta*(Sb + Sp) * Ip / N *fitv_h(t, theta, tau_h) - gamma_p * Ep
+  dIb <- gamma_b * Eb - epsilon * Ib - delta_b * Ib
+  dIp <- gamma_p * Ep + epsilon * Ib - delta_p * Ip
+return(list(c(dSb, dSp, dEb, dEp, dIb, dIp)))
 }
+)
+  }
 
 ```
 
@@ -158,6 +158,7 @@ state <- c(Sb = 2557, Sp = 25568338, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
 
 parameters <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0.03,
            alpha = 0.0019, beta = 2.23, N = 25570895, delta_p = 0.34, delta_b = 0.26,
+           theta = 0.11, tau_h = 8.89, tau_f = 17.93, 
            firf = func_firf, fitv_f = func_fitv_f, fitv_h = func_fitv_h)
 ```
 
@@ -173,7 +174,13 @@ Veranderde beginwaarden bij de verhoogde populatie in 2023.
 state_2023 <- c(Sb = 3033, Sp = 30322699, Eb = 0, Ep = 0, Ib = 1, Ip = 1)
 ```
 
-
+Voor een simulatie voor het nabootsen van een perfect interventie zal theta op nul gezet worden.
+```{r}
+parameters_perfect_intervention <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0.03,
+           alpha = 0.0019, beta = 2.23, N = 25570895, delta_p = 0.34, delta_b = 0.26, 
+           theta = 0, tau_h = 8.89, tau_f = 17.93,
+           firf = func_firf, fitv_f = func_fitv_f, fitv_h = func_fitv_h)
+```
 
 \newpage
 
