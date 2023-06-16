@@ -1,6 +1,5 @@
 ---
 title: 'Valideren en simulaties van Plague Transition model'
-  Plague transmission model?
 author: "Margriet van der Molen en Yvanka Gerdez"
 date: "`r Sys.Date()`"
 output:
@@ -210,7 +209,7 @@ In figuur 2 is te zien dat alhoewel het model in het begin en op het eind goed v
 out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
 plot(out_1[,c("Ib")]*0.7, type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
      ylab = "Pest infecties", main = "Builenpest")
-points(plague.cases$bubonic[53:118], pch = 20, col = "red")
+points(plague_cases$bubonic[53:118], pch = 20, col = "red")
 ```
 
 
@@ -229,7 +228,7 @@ legend("topright", legend=c("Model", "Data longpest"),
 ```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling. De data komt mooi door het model heen, alleen is de piek van het model hoger dan de piek in de data punten."}
 plot(out_1[,c("Ip")]*0.90, type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/2017", 
      ylab = "Pest infecties", main = "Longpest")
-points(plague.cases$pneumonic[53:118], pch = 20, col = "red")
+points(plague_cases$pneumonic[53:118], pch = 20, col = "red")
 ```
 
 
@@ -255,8 +254,8 @@ De perfecte interventie op de groep vatbaren is te verklaren met het feit dat me
 Hieronder wordt weergegeven wat het effect van de interventies die door de mens bij deze uitbraak zijn toegepast, heeft gehad op de vordering van de ziekte. In welke mate ze effect hebben gehad. De functie fitv,h,f is uit het model gehaald. 
 
 ```{r}
-out_int <- ode(parms = parameters_int, time = time, y = state, func = PTM)
-out_geen_int <- ode(parms = parameters_int, time = time, y = state, func = PTM_geen_int)
+out_int <- ode(parms = parameters, time = time, y = state, func = PTM)
+out_geen_int <- ode(parms = parameters, time = time, y = state, func = PTM_geen_int)
 plot(out_int, out_geen_int)
 legend('topright', c('int', 'geen int'), fill=c('black', 'red'))
 ```
@@ -325,7 +324,7 @@ World Health Organization.: \textit {Plague Outbreak Situation Reports.}, https:
 van Bijsterveld W.:\textit {Madagascar in cijfers en grafieken} AlleCijfers. https://allecijfers.nl/land/madagascar/
 
 \bibitem{Carnell22}
-Carnell, H. (2022).:{Historical and modern responses to plague epidemics.} Journal of Humanitarian Affairs, 4(2), 3–11. https://doi.org/10.7227/jha.085 
+Carnell, H. (2022).:\textit {Historical and modern responses to plague epidemics.} Journal of Humanitarian Affairs, 4(2), 3–11. https://doi.org/10.7227/jha.085 
 
 
 \end{thebibliography}
