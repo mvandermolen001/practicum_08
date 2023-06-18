@@ -33,18 +33,17 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de beh
 
 \newpage
 
-#Doel
+# Doel
 
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh18} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
-de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
+Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh18} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen aan de hand van verschillende simulaties.
 
 \newpage
 
-## Theorie
+# Theorie
 
-Bij dit onderzoek wordt het "Plague transmission model (PTM)" gebruikt. Dit model maakt gebruik van het SEIR (Susceptible-Exposed-Infectious-Removed (Vatbaar-blootgesteld-besmettelijk-hersteld)) model. Er wordt voor de S, E en I verandering per variant van de pest, longpest (p (pneumonic)) of builenpest (b (bubonic)), een differentiaal vergelijking opgesteld. Daarnaast wordt de verandering van hoeveel besmette vlooien (firf) in acht genomen en berekend door $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$ gebasseerd op de temperatuur op madagascar. En het effect dat mensen hebben op het bestrijden van de pest op verschillende plaatsen (fitv), berekend door $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
+Bij dit onderzoek wordt het "Plague transmission model (PTM)" gebruikt. Dit model maakt gebruik van het SEIR (Susceptible-Exposed-Infectious-Removed (Vatbaar-blootgesteld-besmettelijk-hersteld)) model. Er wordt voor de S, E en I verandering per variant van de pest, longpest (p (pneumonic)) of builenpest (b (bubonic)), een differentiaal vergelijking opgesteld. Daarnaast wordt de verandering van hoeveel besmette vlooien (firf) in acht genomen en berekend door $firf = A+Bsin(2\pi/12t)+C*cos(2\pi/12t)$ gebaseerd op de temperatuur op madagascar. En het effect dat mensen hebben op het bestrijden van de pest op verschillende plaatsen (fitv), berekend door $fitv,h,f = 1-1/[1+0+exp(\tau h,f-t)]$
 
-### Het model
+## Het model
 
 Hieronder is een schematische weergave van het model gegeven die de verhouding hiertussen laat zien.
 ```{r, echo=FALSE, out.width='95%', fig.cap="Flowchart van het PTM(Kinh, 2018). Hier geven stippellijnen de factoren aan waar maatregelen een effect op kunnen hebben."}
@@ -56,7 +55,9 @@ De totale populatie grootte wordt in N uitgedrukt. Hiervan is Sb het deel van de
 
 Daarnaast zijn er nog een aantal parameters die snelheden van overdracht van de ziektes weergeven. Alpha ($\alpha$) i de snelheid waarmee de ziekte van vlo op mens wordt overgebracht. Beta ($\beta$) is de snelheid waarmee de pest van mens op mens wordt overgebracht. Delta ($\delta$) is de snelheid waarmee het aantal besmettelijke mensen weer afneemt, doordat ze beter worden of sterven. Epsilon ($\epsilon$) is de snelheid waarmee de builenpest bij geinfecteerde mensen overgaat in de longpest variant van de ziekte. Gamma ($\gamma$) is de hoeveelheid blootgestelde mensen (E) aan de ziekte, die er ziek van worden, waardoor ze besmettelijk (I) worden. 
 
-### De formules
+\newpage
+
+## De formules
 
 Met behulp van deze parameters kunnen de volgende differentiaal vergelijkingen opgesteld worden:
 
@@ -73,6 +74,7 @@ $$\frac{dI_b}{dt}=\gamma_b E_b - \epsilon I_b - \delta_bI_b$$
 $$\frac{dI_p}{dt}=\gamma_p E_p + \epsilon I_b - \delta_pI_p$$
 Hiermee worden de veranderingen in de hoeveelheid van de populatie die vatbaar zijn voor de longpest (Sp), vatbaar voor de builenpest (Sb), blootgesteld aan de longpest (Ep), blootgesteld aan de builenpest (Eb), geïnfecteerd door de longpest (Ip) en geïnfecteerd door de builenpest (Ib) bepaald.
 
+\newpage
 
 # Methode
 
@@ -114,6 +116,8 @@ return(list(c(dSb, dSp, dEb, dEp, dIb, dIp)))
   }
 
 ```
+
+Om te kijken wat het effect is wanneer er geen interventie is, is het volgende model gebruikt:
 
 ```{r}
 PTM_geen_int <- function(t,state,parms){
@@ -231,6 +235,7 @@ plot(out_1[,c("Ip")]*0.90, type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/
 points(plague_cases$pneumonic[53:118], pch = 20, col = "red")
 ```
 
+\newpage
 
 ## Simulaties van het model 
 
@@ -288,20 +293,30 @@ legend("topright", c("2017", "2023"), fill=c('red', 'blue'))
 ```
 Bij een vermenigvuldiging van de berekennde longpest infectie gevallen met 0.47, zijn de toppen van beide grafieken ongeveer gelijk aan elkaar. De infectiegevallen zijn bij de huidige populatie dus ongeveer 50% hoger, zo veel. Daarnaast loopt de lijn van de grafiek niet exact over elkaar heen. De afname van de piek, gaat langzamer, 
 
-
+\newpage
 
 # Discussie en Conclusie
 
 ## Discussie
 Het is niet gelukt om het onderzoek goed na te bootsen. Je krijgt niet exact dezelfde resultaten als in het artikel afgebeeld wordt. Het model loopt niet goed door de punten heen zoals in het artikel wel te zien is. 
-Bij het model die de infectiegevallen van de builenpest laat zien, lijkt er ongeveer een 30% verhoging te zijn, dan de resultaten in het artikel. Bij een verschuiving van het model 30% lager (*0.7), lijkt het model wel goed door de punten heen te lopen, zoals in het artikel ook zichtbaar is. 
-Bij het model die de infectiegevallen van de longpest laat zien, is er meer aan de hand. De top van de grafiek lijkt ongeveer 10% te hoog te zijn, maar een verschuiving van 10% omlaag (*0.9), loopt de lijn na de top, nog steeds niet exact door de punten heen zoals in het artikel wordt weer gegeven. De lijn lijkt niet snel genoeg te dalen. 
+
+Bij het model die de infectiegevallen van de builenpest (figuur 2) laat zien, lijkt er ongeveer een 30% verhoging te zijn, dan de resultaten in het artikel. Bij een verschuiving van het model 30% lager (*0.7), lijkt het model wel goed door de punten heen te lopen, zoals in het artikel ook zichtbaar is. 
+
+Bij het model die de infectiegevallen van de longpest (figuur 3) laat zien, is er meer aan de hand. De top van de grafiek lijkt ongeveer 10% te hoog te zijn, maar een verschuiving van 10% omlaag (*0.9), loopt de lijn na de top, nog steeds niet exact door de punten heen zoals in het artikel wordt weer gegeven. De lijn lijkt niet snel genoeg te dalen. 
 
 
-Bij de simulatie 'perfecte interventie' werd er gekeken naar wat er zou gebeuren ales er een perfecte interventie was tegenover de inperfecte interventie die daadwerkelijk gebeurde. Zoals verwacht blijven meer mensen langer vatbaar omdat deze niet blootgesteld of geinfecteerd waren. Blootgesteld en geinfecteerden met de builenpest zag een minder snel effect van de interventie omdat er hier een nadruk ligt op het voorkomen dat vlooien bij mensen komen\cite{Carnell22}, deze soort interventie duurt langer totdat het effect heeft. Dit terwijl longpest, hoewel het sneller verspreid, ook makkelijker te beinvloeden is aan de hand van maatregelen. 
+Bij de simulatie 'perfecte interventie' (figuur 4) werd er gekeken naar wat er zou gebeuren ales er een perfecte interventie was tegenover de inperfecte interventie die daadwerkelijk gebeurde. Zoals verwacht blijven meer mensen langer vatbaar omdat deze niet blootgesteld of geinfecteerd waren. Blootgesteld en geinfecteerden met de builenpest zag een minder snel effect van de interventie omdat er hier een nadruk ligt op het voorkomen dat vlooien bij mensen komen\cite{Carnell22}, deze soort interventie duurt langer totdat het effect heeft. Dit terwijl longpest, hoewel het sneller verspreid, ook makkelijker te beinvloeden is aan de hand van maatregelen. 
+
+Er was nog een idee om te kijken wat het effect van klimaatverandering op de verspreiding van de pest zou zijn. Doordat er niet vastgesteld kon worden wat de parameters betekende in de formule was het niet mogelijk om een goede simulatie uit te laten spelen. Er valt wel te verwachten dat klimaatverandering effect gaat hebben op de verspreiding van de pest. Niet alleen omdat de pest seizoensgebonden is\cite{Kreppel14}, maar omdat als extreme weeromstandigheden vaker voorkomen er een grotere kans is dat velen mensen niet meer bij die cruciale vroege behandelingen kunnen komen{Weiskopf21}.
+
+In vervolg onderzoek zou er gekeken worden naar het effect van klimaatverandering op de pest. Dit omdat klimaatverandering dus een grote rol kan spelen met hoe de pest zich zal gaan verspreiden in de toekomst.
+
+\newpage
 
 ## Conclusie 
+Het is niet gelukt om het onderzoek na te bootsen. De resultaten verkregen in dit onderzoek zijn anders dan die in het artikel. Doordat het model anders werkte is het af te vragen of de simulaties valide zijn of niet. Alhoewel het model niet goed werkt, kunnen de uitslagen wel terug gekoppeld worden naar de biologische werking van de pest.
 
+\newpage
 
 \begin{thebibliography}{9}
 
@@ -325,6 +340,13 @@ van Bijsterveld W.:\textit {Madagascar in cijfers en grafieken} AlleCijfers. htt
 
 \bibitem{Carnell22}
 Carnell, H. (2022).:\textit {Historical and modern responses to plague epidemics.} Journal of Humanitarian Affairs, 4(2), 3–11. https://doi.org/10.7227/jha.085 
+
+\bibitem{Kreppel14}
+Kreppel, K.S. et al. (2014):. \textit {‘A non-stationary relationship between global climate phenomena and human plague incidence in Madagascar’}, PLoS Neglected Tropical Diseases, 8(10). doi:10.1371/journal.pntd.0003155. 
+
+\bibitem{Weiskopf21}
+Weiskopf, S. R., J. A. Cushing, T. Morelli, and B. J. E. Myers. 2021.: \textit {Climate change risks and adaptation options for Madagascar.}
+Ecology and Society 26(4):36. https://doi.org/10.5751/ES-12816-260436
 
 
 \end{thebibliography}
