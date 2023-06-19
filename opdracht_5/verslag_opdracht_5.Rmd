@@ -35,8 +35,8 @@ Alhoewel de pest nog steeds een gevaar blijft in verschillende landen, is de beh
 
 #Doel
 
-Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh18} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van
-de pest. Het model wat hiervoor gebruikt wordt, wordt onder de loep genomen.
+Het doel van dit onderzoek is om te kijken of de vindingen van het artikel\cite{Kinh18} gerepliceerd kunnen worden. De vindingen zullen wat zeggen over hoe de pest tijdens de uitbraak verspreidt, en de potentiele invloed van het weer op de verspreiding van de pest. Het model wat hiervoor gebruikt wordt, wordt vervolgens onder de loep genomen door verschillende simulaties uit te voeren. Er zal naar het effect van interventies op het verloop van de pest gekeken worden, en wat het effect zou zijn, als de pest nu met de huidige populatie grootte zou uitbreken. 
+Er wordt verwacht dat het model a.d.h.v. het artikel juist gerepliceerd kan worden. Daarnaast wordt verwacht, dat bij een perfecte interventie er minder mensen ziek worden door het bestrijden van de vlooien en minder verspreiding tussen mensen. Hierdoor zullen er wel meer mensen vatbaar blijven, voor de ziekte. Zonder interventies wordt er juist verwacht dat iedereen ziek zal worden, vooral door de longpest. Als laatste wordt er verwacht, dat bij een hogere populaite grootte, er meer mensen ziek worden, maar verder het verloop van de ziekte niet zal veranderen. 
 
 \newpage
 
@@ -188,10 +188,10 @@ parameters_perfect_intervention <- c(gamma_b = 0.23, gamma_p = 0.29, epsilon = 0
 
 ## Valideren model
 
-Hieronder is te zien hoe het model verloopt vergeleken met het verloop aan de hand van de verkregen data punten.
+Hieronder is te zien hoe het model het verloop van de infecties van de builenpest en de longpest bepaald, vergeleken met het verloop aan de hand van de verkregen data punten.
 
 ### Builenpest:
-```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling."}
+```{r, fig.cap="In dit figuur is te zien hoe het model die de infectie gevallen van de builenpest voorspelt, verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling, die vervolgens afvlakt. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling en een afvlakking."}
 out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
 
 plot(out_1[,c("Ib")], type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
@@ -201,21 +201,18 @@ points(plague_cases$bubonic[53:118], pch = 20, col = "red")
 legend("topright", legend=c("Model", "Data builenpest"),
        col=c("black", "red"), lty=c(1, NA), cex=0.8, pch = c(NA, 20))
 ```
+In figuur 2 is te zien dat alhoewel het model in het begin en op het eind goed verloopt, de piek niet helemaal goed op de datapunten zit. Het model heeft duidelijk een hogere piek, terwijl de data punten wat lager zitten. De piek lijkt wel op het goede moment te zitten. 
 
-In figuur 2 is te zien dat alhoewel het model in het begin en op het eind goed verloopt, de piek niet helemaal goed op de datapunten zit. Het model heeft duidelijk een hogere piek, terwijl de data punten wat lager zitten. De piek lijkt wel op het goede moment te zitten.
-
-
-```{r, fig.cap="In dit figuur is te zien hoe het model verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling. De data punten maken een wat minder hoge piek vergeleken met het model, maar ook hier is eerst een langzame steiging te zien en vervolgens weer de daling. Het model bereikt geen 0 waarde maar de data punten wel."}
+```{r, fig.cap="In dit figuur is te zien hoe het model die de infectie gevallen van de builenpest voorspelt, verloopt (zwarte lijn) en hoe de uitbraak daadwerkelijk verliep (rode punten). Het model ziet eerst een stijging en vervolgens een wat steilere daling, die vervolgens afvlakt. De data punten liggen verspreid rond de lijn van het model. Eerst een steiging en vervolgens de daling en afvlakking."}
 out_1 <- ode(parms = parameters, time = time, y = state, func = PTM)
 plot(out_1[,c("Ib")]*0.7, type = "l", ylim = c(0, 20), xlab = "Dagen van 22/09/2017",
      ylab = "Pest infecties", main = "Builenpest")
 points(plague_cases$bubonic[53:118], pch = 20, col = "red")
 ```
-
-
+In figuur 3 is het model met 30% verlaagt, zodat het beter door de datapunten heen loopt, zoals in het artikel wordt verwacht.
 
 ### Longpest:
-```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling."}
+```{r, fig.cap="In het volgende figuur is het verloop van de infectiegevallen van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling."}
 plot(out_1[,c("Ip")], type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/2017", 
 
      ylab = "Pest infecties", main = "Longpest")
@@ -224,68 +221,90 @@ points(plague_cases$pneumonic[53:118], pch = 20, col = "red")
 legend("topright", legend=c("Model", "Data longpest"),
        col=c("black", "red"), lty=c(1, NA), cex=0.8, pch = c(NA, 20))
 ```
+In figuur 4 is te zien dat het model goed door de punten heen loopt. Vergeleken met de resultaten uit het artikel, zit ook dit model iets te hoog. 
 
 ```{r, fig.cap="In het volgende figuur is het verloop van de longpest te zien aan de hand van het model (zwarte lijn) en de data (rode punten). Hier is een vrij steile stijging te zien in zowel het model als de data, gevolgt door een geleidelijke daling. De data komt mooi door het model heen, alleen is de piek van het model hoger dan de piek in de data punten."}
 plot(out_1[,c("Ip")]*0.90, type = "l", ylim = c(0, 80), xlab = "Dagen van 22/09/2017", 
      ylab = "Pest infecties", main = "Longpest")
 points(plague_cases$pneumonic[53:118], pch = 20, col = "red")
 ```
+In figuur 5 wordt het model met 10% verlaagt, zodat het beter door de datapunten heen loopt, zoals in het artikel wordt verwacht.
 
 
 ## Simulaties van het model 
 
-### Perfecte interventies
-Deze simulatie laat zien wat er gebeurt als de interventie perfect is, maar de tijd waarmee de interventie het maximum effect heeft hetzelfde blijft.
+### Interventies
+Hieronder wordt weergegeven wat het effect van de interventies die door de mens bij deze uitbraak zijn toegepast, heeft gehad op de vordering van de ziekte. In welke mate ze effect hebben gehad. Dit wordt gedaan door de uiterste scenario's weer te geven; bij een perfecte interventie en geen interventie.
 
-```{r, fig.cap="In het figuur is het gevolg van een perfecte interventie te zien (zwarte lijn) vergeleken met de orginele response(rode lijn). Bij de perfecte interventie op de groep van de vatbare is er te zien dat het eerst geleidelijk loopt met de orginele lijn, tot rond dag 20 waar het recht trekt. Bij de blootgestelde groep en de groep van geinfecteerde is er te zien dat het ook geleidelijk loopt, alleen de perfecte interventie lijn ziet een minder langere periode van uitbraak."}
-perfect_intervention <- ode(parms = parameters_perfect_intervention, 
+#### Perfecte interventies
+Deze simulatie laat zien wat er gebeurt als de interventie perfect is, theta = 0, maar de tijd waarmee de interventie het maximum effect heeft hetzelfde blijft.
+
+```{r, fig.cap="In het figuur is het gevolg van een perfecte interventie te zien (zwarte lijn) vergeleken met de orginele response (rode lijn). Bij de perfecte interventie op de groep van de vatbare is er te zien dat het eerst samen op loopt met de orginele lijn, tot rond dag 20 waar het recht trekt. Bij de blootgestelde groep en de groep van geinfecteerde is er te zien dat het ook samen op loopt, maar op een gegeven moment, daalt de perfecte interventie lijn veel sneller. Onder de perfecte interventie, zie je een minder langere periode van uitbraak. Ook is de top van pieken bij de longpest onder de perfecte interventie, verlaagd."}
+out_perfect_int <- ode(parms = parameters_perfect_intervention, 
                             time = time, y = state, func = PTM)
 
-plot(perfect_intervention, out_1, type = "l", main = c("Vatbaar Builenpest", "Vatbaar Longpest", 
-                                                       "Blootgesteld Builenpest", "Blootgesteld longpest",
-                                                       "Geinfecteerden Builenpest", "Geinfecteerden Longpest"),
-     xlab = "Tijd in dagen")
+plot(out_perfect_int, out_1, type = "l", main = c("Vatbaar Builenpest", "Vatbaar Longpest", 
+                                                  "Blootgesteld Builenpest", "Blootgesteld longpest",
+                                                  "Geinfecteerden Builenpest", "Geinfecteerden Longpest"),
+     xlab = "Tijd in dagen", ylab = 'Aantal gevallen')
+legend('topright', c('perfecte int', 'normale int'), fill=c('black', 'red'))
 ```
-
-
 De perfecte interventie op de groep vatbaren is te verklaren met het feit dat mensen die ziek zijn, niet vatbaar zijn. Wanneer er bij interventie minder zieke zijn, betekent dit dat mensen vatbaar blijven.
 
-### Geen interventies
-Hieronder wordt weergegeven wat het effect van de interventies die door de mens bij deze uitbraak zijn toegepast, heeft gehad op de vordering van de ziekte. In welke mate ze effect hebben gehad. De functie fitv,h,f is uit het model gehaald. 
+#### Geen interventies
+De simulatie hieronder laat zien wat er gebeurd als er geen interventie wordt toegepast tijdens een uitbraak van de pest. De functie fitv,h,f is uit het model gehaald. 
 
-```{r}
-out_int <- ode(parms = parameters, time = time, y = state, func = PTM)
+```{r, fig.cap="In dit figuur is het gevolg van een uitbraak met de pest te zien, wanneer er geen interventies door de mens zou worden toegepast (zwarte lijn) vergeleken met wat de orginele respons (rode lijn). Er is te zien dat na ongeveer 40 dagen, iedereen ziek is geweest en ook niet meer vatbaar voor de ziektes is. Bij de builenpest lijken er 2 pieken in elkaar over te lopen, waarna het pas afneemt. Bij de longpest zijn het aantal gevallen heel veel gestegen, 100.000x zo veel."}
 out_geen_int <- ode(parms = parameters, time = time, y = state, func = PTM_geen_int)
-plot(out_int, out_geen_int)
-legend('topright', c('int', 'geen int'), fill=c('black', 'red'))
+plot(out_geen_int, out_1, type = "l", main = c("Vatbaar Builenpest", "Vatbaar Longpest", 
+                                              "Blootgesteld Builenpest", "Blootgesteld longpest",
+                                              "Geinfecteerden Builenpest", "Geinfecteerden Longpest"),
+     xlab = "Tijd in dagen", ylab = 'Aantal gevallen')
+legend('topleft', c('geen int', 'normal int'), fill=c('black', 'red'))
 ```
+Na 40 dagen, is iedereen besmet geweest, waardoor niemand er meer ziek van kan worden. De gevallen die er vatbaar voor zijn, is dus niemand meer. Daarnaast wordt vrijwel iedereen met de longpest besmet i.p.v. met de builenpest omdat dit veel sneller wordt overgedragen. Het aantal gevallen dat de longpest krijgt, is dus heel hoog geworden. 
 
 
 ### Gestegen populatie
-Sinds deze pest uitbraak in 2017, is de populatie gestegen. Hieronder zal het effect van een stijging in populatie op het vorderen van de infectie volgens het model weergegeven worden. De huidige poputatie (juni 2023) in Madagascar, 30.325.732 \cite{AlleCijfers}, zal gebruikt worden. N en de beginwaarden Sb, berekend door $pN$ en Sp, berekend door $(1-p)N$ worden hieraan aangepast.
+Sinds deze pest uitbraak in 2017, is de populatie gestegen. Hieronder zal het effect van een stijging in de populatie op het aantal infectiegevallen van de builenpest en de longpest volgens het model weergegeven worden. De huidige poputatie (juni 2023) in Madagascar, 30.325.732 \cite{AlleCijfers}, zal gebruikt worden. N en de beginwaarden Sb, berekend door $pN$ en Sp, berekend door $(1-p)N$ worden hiervoor aangepast.
 
 ```{r}
 out_2017 <- ode(parms = parameters, time = time, y = state, func = PTM)
 out_2023 <- ode(parms = parameters, time = time, y = state_2023, func = PTM)
 ```
 
-```{r}
-plot(out_2017[,c("Ib")], type='l', col="red", main="Infecties van de builenpest", ylim=c(0,25), xlab="Tijd", ylab="Infectiegevallen")
+#### Builenpest
+```{r, fig.cap="In dit figuur is het aantal infectiegevallen van de builenpest bij de huidige gestegen populatie (blauw) weegegeven tenopzichte van dat in 2017 tijdens de uitbraak (rood). De lijn van de huidige hogere populatie, volgt de lijn van de uitbraak in 2017, maar dan iets hoger. "}
+plot(out_2017[,c("Ib")], type='l', col="red", main="Builenpest", ylim=c(0,25), xlab="Tijd", ylab="Infectiegevallen")
 points(out_2023[,c("Ib")], col="blue", type='l')
 legend('topright', c('2017', '2023'), fill=c('red', 'blue'))
 ```
+In figuur 8 is te zien dat er bij een hogere populatie, ook meer infectiegevallen van de builenpest verwacht wordt. Verder lijkt de lijn wel gelijk te lopen aan die van 2017. 
 
-```{r}
-plot(out_2017[,c("Ip")], type="l", col="red", main="Infecties van de longpest", ylim=c(0,155), xlab="Tijd", ylab="Infectiegevallen")
+```{r, fig.cap="In dit figuur is het verloop van de infectiegevallen van de builenpest bij de huidige gestegen populatie (blauw) weegegeven tenopzichte van dat in 2017 tijdens de uitbraak (rood) door de toppen van de grafieken aan elkaar gelijk te stellen. De lijnen lopen vrijwel exact over elkaar heen."}
+plot(out_2017[,c("Ib")], type = "l", col='red', ylab="", yaxt="n", xlab = "Tijd", main = "Verloop builenpest infectie gevallen")
+points(out_2023[,c("Ib")]*0.85,type = "l", col='blue')
+legend("topright", c("2017", "2023"), fill=c('red', 'blue'))
+```
+In figuur 9 is te zien dat er bij een hogere populatie, ook meer infectiegevallen van de builenpest verwacht wordt. Verder lijkt de lijn wel gelijk te lopen aan die van 2017. 
+
+
+#### Longpest
+```{r, fig.cap="In dit figuur is het aantal infectiegevallen van de longpest bij de huidige gestegen populatie (blauw) weegegeven tenopzichte van dat in 2017 tijdens de uitbraak (rood). De lijn van de huidige hogere populatie, volgt de lijn van de uitbraak in 2017, maar dan 2x zo hoog."}
+plot(out_2017[,c("Ip")], type="l", col="red", main="Longpest", ylim=c(0,155), xlab="Tijd", ylab="Infectiegevallen")
 points(out_2023[,c("Ip")], col="blue", type='l')
 legend('topright', c('2017', '2023'), fill=c('red', 'blue'))
 ```
+In figuur 10 is te zien dat er bij een hogere populatie, ook meer infectiegevallen van de longpest verwacht wordt. Verder lijkt de lijn wel gelijk te lopen aan die van 2017. 
 
-```{r}
-plot(out_2017[,c("Ip")], type = "l", col='red')
+
+```{r, fig.cap="In dit figuur is het verloop van de infectiegevallen van de builenpest bij de huidige gestegen populatie (blauw) weegegeven tenopzichte van dat in 2017 tijdens de uitbraak (rood) door de toppen van de grafieken aan elkaar gelijk te stellen. De stijging van het aantal infectiegevallen, gebeurd vrijwel gelijk, maar de afname bij de hogere huidige populatie, verloopt duidelijk langzamer dan die van de populatie in 2017."}
+plot(out_2017[,c("Ip")], type = "l", col='red', ylab="", yaxt="n", xlab="Tijd", main="Verloop longpest infectie gevallen")
 points(out_2023[,c("Ip")]*0.468,type = "l", col='blue')
 legend("topright", c("2017", "2023"), fill=c('red', 'blue'))
 ```
+In figuur 11 is te zien dat er bij een hogere populatie, ook de vordering van de ziekte toch anders plaatsvindt. De afname van het aantal infectiegevallen met de longpest, verloopt langzamer. 
+
 Bij een vermenigvuldiging van de berekennde longpest infectie gevallen met 0.47, zijn de toppen van beide grafieken ongeveer gelijk aan elkaar. De infectiegevallen zijn bij de huidige populatie dus ongeveer 50% hoger, zo veel. Daarnaast loopt de lijn van de grafiek niet exact over elkaar heen. De afname van de piek, gaat langzamer, 
 
 
@@ -297,8 +316,12 @@ Het is niet gelukt om het onderzoek goed na te bootsen. Je krijgt niet exact dez
 Bij het model die de infectiegevallen van de builenpest laat zien, lijkt er ongeveer een 30% verhoging te zijn, dan de resultaten in het artikel. Bij een verschuiving van het model 30% lager (*0.7), lijkt het model wel goed door de punten heen te lopen, zoals in het artikel ook zichtbaar is. 
 Bij het model die de infectiegevallen van de longpest laat zien, is er meer aan de hand. De top van de grafiek lijkt ongeveer 10% te hoog te zijn, maar een verschuiving van 10% omlaag (*0.9), loopt de lijn na de top, nog steeds niet exact door de punten heen zoals in het artikel wordt weer gegeven. De lijn lijkt niet snel genoeg te dalen. 
 
-
 Bij de simulatie 'perfecte interventie' werd er gekeken naar wat er zou gebeuren ales er een perfecte interventie was tegenover de inperfecte interventie die daadwerkelijk gebeurde. Zoals verwacht blijven meer mensen langer vatbaar omdat deze niet blootgesteld of geinfecteerd waren. Blootgesteld en geinfecteerden met de builenpest zag een minder snel effect van de interventie omdat er hier een nadruk ligt op het voorkomen dat vlooien bij mensen komen\cite{Carnell22}, deze soort interventie duurt langer totdat het effect heeft. Dit terwijl longpest, hoewel het sneller verspreid, ook makkelijker te beinvloeden is aan de hand van maatregelen. 
+
+Bij de simulatie 'geen interventie' werd er gekeken naar de gevolgen van een uitbraak van de pest, als er geen interventie maatregelen toegepast zouden zijn geweest. Zoals verwacht zou iedereen ziek worden en hierdoor uiteindelijk niet meer vatbaar worden. Ook werd verwacht dat er veel meer gevallen van de longpest zou zijn, omdat dit van mens op mens zich verspreid. De tweede piek van de builenpest was niet verwacht en een verklaring daarvoor hebben we ook niet kunnen vinden.  
+
+Bij de simulatie 'gestegen populatie' werd er gekeken naar het verschil tussen het verloop van de ziekte als er nu een uitbraak zou plaatsvinden met de huidige populatie, ten opzichte van 2017. Zoals werd verwacht, waren er meer bemettings gevallen. Daarnaast was het verloop van de longpest wel anders. De afname van het infectiegevallen, verliep langzamer. Dit werd niet verwacht, maar is te verklaren, omdat het van mens op mens wordt overgedragen in tegenstelling tot de builenpest. Als er meer mensen ziekt zijn, zullen die ook meer mensen besmetten. Bij de builenpest, is er geen toename in het aantal vlooien als er meer mensen ziek worden. Daarom verloopt die ziekte vrijwel gelijk aan de lagere populatie in 2017.
+
 
 ## Conclusie 
 
